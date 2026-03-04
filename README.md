@@ -1,10 +1,10 @@
-# ⚡️ Voltix Marketplace
+# Voltix Marketplace
 
 **Voltix** is a high-performance e-commerce platform built using a **Microfrontend Architecture**. It utilizes **Webpack 5 Module Federation** to allow independent teams to build, deploy, and scale different parts of the marketplace simultaneously.
 
 
 
-## 🏗 Project Architecture
+## Project Architecture
 
 This project is managed as a **Monorepo** using npm workspaces, ensuring a unified development experience while maintaining strict separation of concerns:
 
@@ -13,13 +13,13 @@ This project is managed as a **Monorepo** using npm workspaces, ensuring a unifi
 * **Checkout (Remote):** (Planned) Handles the shopping cart, payment processing, and order confirmation.
 * **Shared UI:** A shared library of design system components (buttons, inputs, modals) used across all microfrontends to ensure brand consistency.
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 * **Frontend:** React 18, Webpack 5 (Module Federation), Babel.
 * **Tooling:** Professional Monorepo setup with shared `node_modules`.
 * **AI Integration:** OpenAI API for intelligent product recommendations and semantic search.
 
-## 🛠 Getting Started
+##  Getting Started
 
 1. **Clone the repository:**
    ```bash
