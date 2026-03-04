@@ -6,8 +6,12 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   devServer: {
-    port: 3000,
+    port: 3001,
     historyApiFallback: true,
+    allowedHosts: 'all',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   output: {
     publicPath: 'auto',
@@ -15,24 +19,23 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        options: {
-          presets: [
-            ['@babel/preset-env', { modules: false }],
-            '@babel/preset-react',
-          ],
-          parserOpts: { sourceType: 'module' },
+        use: {
+          loader: 'babel-loader',
+          options: {
+            parserOpts: { sourceType: 'module' },
+          },
         },
       },
     ],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'shell',
-      remotes: {
-        catalog: 'catalog@http://localhost:3001/remoteEntry.js',
+      name: 'catalog', 
+      filename: 'remoteEntry.js', 
+      exposes: {
+        './CatalogApp': './src/App', 
       },
       shared: {
         react: { singleton: true, requiredVersion: '^19.2.4', eager: true },
@@ -40,7 +43,9 @@ module.exports = {
       },
     }),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
+      template: path.join(__dirname, 'public/index.html'),
+      filename: 'index.html',
+      inject: 'body',
     }),
   ],
   resolve: {
