@@ -4,10 +4,3 @@ export {
   COMPARE_MAX_ITEMS,
   type CompareState,
 } from "./compareStore.js";
-export {
-  useCartStore,
-  useCartItems,
-  useCartTotalPrice,
-  useCompareStore,
-  useCompareProducts,
-} from "./hooks.js";

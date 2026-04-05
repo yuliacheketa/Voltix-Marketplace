@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Button, PriceTag, RatingStars, Spinner, colors } from "@voltix/ui-kit";
 import { formatDate } from "@voltix/utils";
 import { fetchProductById } from "../apiService/catalogApi.js";
-import { useCartStore, useCompareStore } from "@voltix/shared-state";
+import { useCartStore, useCompareStore } from "@voltix/shared-state/hooks";
 
 const Page = styled.div`
   max-width: 56rem;

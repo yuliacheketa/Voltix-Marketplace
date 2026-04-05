@@ -41,6 +41,7 @@ module.exports = {
       name: "shell",
       remotes: {
         catalog: "catalog@http://localhost:3001/remoteEntry.js",
+        checkout: "checkout@http://localhost:3002/remoteEntry.js",
       },
       shared: {
         react: {
@@ -91,7 +92,19 @@ module.exports = {
           requiredVersion: "^5.0.3",
           eager: true,
         },
+        vue: {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "^3.5.13",
+          eager: false,
+        },
         "@voltix/shared-state": {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "0.0.0",
+          eager: true,
+        },
+        "@voltix/shared-state/hooks": {
           singleton: true,
           strictVersion: false,
           requiredVersion: "0.0.0",

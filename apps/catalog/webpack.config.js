@@ -101,6 +101,12 @@ module.exports = {
           requiredVersion: "0.0.0",
           eager: true,
         },
+        "@voltix/shared-state/hooks": {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "0.0.0",
+          eager: true,
+        },
         "@voltix/api-client": {
           singleton: true,
           strictVersion: false,

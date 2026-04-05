@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Card, PriceTag, RatingStars, colors } from "@voltix/ui-kit";
-import { useCartStore, useCompareStore } from "@voltix/shared-state";
+import { useCartStore, useCompareStore } from "@voltix/shared-state/hooks";
 
 const StyledCard = styled(Card)`
   display: flex;
