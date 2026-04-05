@@ -1,0 +1,28 @@
+<div class="co-ph">
+  <h2 class="co-ph-title">Price history</h2>
+  @if (loading()) {
+    <p class="co-ph-status">Loading…</p>
+  } @else if (error()) {
+    <p class="co-ph-err">{{ error() }}</p>
+  } @else if (!products().length) {
+    <p class="co-ph-status">Add products to see price trends.</p>
+  } @else if (!hasData()) {
+    <p class="co-ph-status">No history data.</p>
+  } @else {
+    <div class="co-ph-chart">
+      <ngx-charts-line-chart
+        [results]="chartData()"
+        [scheme]="scheme"
+        [legend]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxisLabel]="'Date'"
+        [yAxisLabel]="'Price'"
+        [animations]="true"
+        [view]="view()"
+      />
+    </div>
+  }
+</div>

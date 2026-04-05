@@ -8,9 +8,9 @@
     "libs/*"
   ],
   "scripts": {
-    "dev": "concurrently -n catalog,checkout,shell -c blue,magenta,green \"npm run start -w catalog\" \"npm run start -w @voltix/checkout\" \"npm run start -w shell\"",
+    "dev": "concurrently -n catalog,checkout,compare,auth,shell -c blue,magenta,yellow,cyan,green \"npm run start -w catalog\" \"npm run start -w @voltix/checkout\" \"npm run start -w @voltix/compare-matrix\" \"npm run start -w @voltix/auth\" \"npm run start -w shell\"",
     "build:libs": "npm run build -w @voltix/utils && npm run build -w @voltix/api-client && npm run build -w @voltix/shared-state && npm run build -w @voltix/ui-kit",
-    "build": "npm run build:libs && npm run build -w shell && npm run build -w catalog && npm run build -w @voltix/checkout",
+    "build": "npm run build:libs && npm run build -w shell && npm run build -w catalog && npm run build -w @voltix/checkout && npm run build -w @voltix/compare-matrix && npm run build -w @voltix/auth",
     "lint": "eslint \"apps/**/*.{js,jsx,ts,tsx}\" \"libs/**/*.{js,jsx,ts,tsx}\"",
     "format": "prettier --write .",
     "prettier:fix": "prettier --write .",

@@ -1,0 +1,50 @@
+.co-table-empty {
+  margin: 0;
+  color: #5c6470;
+}
+
+.co-table-wrap {
+  overflow: auto;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e9ef;
+  border-radius: 8px;
+}
+
+.co-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.co-table-spec,
+.co-table-head {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  background: #f4f7fb;
+  border-bottom: 1px solid #e5e9ef;
+}
+
+.co-table-rowhead {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  font-weight: 600;
+  background: #fafbfc;
+  border-bottom: 1px solid #eef1f5;
+  white-space: nowrap;
+}
+
+.co-table-cell {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #eef1f5;
+  vertical-align: top;
+}
+
+.co-table-cell-best {
+  background: #dcfce7;
+  color: #14532d;
+}
+
+.co-table-cell-worst {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
