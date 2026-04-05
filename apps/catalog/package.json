@@ -5,14 +5,20 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@voltix/api-client": "0.0.0",
+    "@voltix/shared-state": "0.0.0",
+    "@voltix/ui-kit": "0.0.0",
+    "@voltix/utils": "0.0.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

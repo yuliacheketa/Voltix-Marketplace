@@ -4,10 +4,29 @@
   "private": true,
   "description": "Monorepo for Voltix Microfrontends",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently -n catalog,shell -c blue,green \"npm run start -w catalog\" \"npm run start -w shell\"",
+    "build:libs": "npm run build -w @voltix/utils && npm run build -w @voltix/api-client && npm run build -w @voltix/shared-state && npm run build -w @voltix/ui-kit",
+    "build": "npm run build:libs && npm run build -w shell && npm run build -w catalog",
+    "lint": "eslint \"apps/**/*.{js,jsx,ts,tsx}\" \"libs/**/*.{js,jsx,ts,tsx}\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@module-federation/enhanced": "^0.14.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1"
   },
   "keywords": [],
   "author": "",

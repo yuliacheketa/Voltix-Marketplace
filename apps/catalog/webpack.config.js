@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 const { ModuleFederationPlugin } = require('webpack').container;
 const path = require('path');
 
@@ -31,6 +32,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.API_URL': JSON.stringify(process.env.API_URL ?? ''),
+    }),
     new ModuleFederationPlugin({
       name: 'catalog', 
       filename: 'remoteEntry.js', 
@@ -40,6 +44,11 @@ module.exports = {
       shared: {
         react: { singleton: true, requiredVersion: '^19.2.4', eager: true },
         'react-dom': { singleton: true, requiredVersion: '^19.2.4', eager: true },
+        'styled-components': {
+          singleton: true,
+          requiredVersion: '^6.1.13',
+          eager: true,
+        },
       },
     }),
     new HtmlWebpackPlugin({

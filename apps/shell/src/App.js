@@ -1,6 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-
-const CatalogApp = lazy(() => import('catalog/CatalogApp'));
+import React, { Suspense, lazy } from "react";
+const CatalogApp = lazy(() => import("catalog/CatalogApp"));
 
 const App = () => (
   <div>
