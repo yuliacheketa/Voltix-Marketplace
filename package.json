@@ -13,6 +13,7 @@
     "build": "npm run build:libs && npm run build -w shell && npm run build -w catalog",
     "lint": "eslint \"apps/**/*.{js,jsx,ts,tsx}\" \"libs/**/*.{js,jsx,ts,tsx}\"",
     "format": "prettier --write .",
+    "prettier:fix": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {

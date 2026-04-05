@@ -1,17 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voltix Marketplace</title>
-  <style>
-    .shell-header { padding: 16px 40px; background-color: #1a1a2e; color: white; }
-    .shell-header h1 { margin: 0; }
-    .shell-main { padding: 40px; }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voltix Marketplace</title>
+    <style>
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        background: #f2f2fa;
+        color: #1a1a34;
+      }
+      .shell-header {
+        padding: 18px 40px;
+        background: linear-gradient(
+          135deg,
+          #333399 0%,
+          #4a4ab5 55%,
+          #5c5cc4 100%
+        );
+        color: #fafaff;
+        box-shadow: 0 2px 12px rgb(51 51 153 / 0.25);
+      }
+      .shell-header h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .shell-main {
+        padding: 32px 40px 48px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

@@ -1,3 +1,4 @@
+export { colors } from "./theme.js";
 export { Button, type ButtonProps, type ButtonVariant } from "./Button.js";
 export { Input, type InputProps } from "./Input.js";
 export { Card, type CardProps } from "./Card.js";

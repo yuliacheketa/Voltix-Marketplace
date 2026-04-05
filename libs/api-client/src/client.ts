@@ -2,7 +2,7 @@ import axios, { type AxiosInstance } from "axios";
 
 declare const process: { env: Record<string, string | undefined> } | undefined;
 
-function getBaseURL(): string {
+export function getBaseURL(): string {
   if (typeof process !== "undefined" && process?.env?.API_URL) {
     return process.env.API_URL;
   }

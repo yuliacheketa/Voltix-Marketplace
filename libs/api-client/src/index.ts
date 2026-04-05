@@ -1,4 +1,9 @@
-export { apiClient, getApiClient, JWT_STORAGE_KEY } from "./client.js";
+export {
+  apiClient,
+  getApiClient,
+  getBaseURL,
+  JWT_STORAGE_KEY,
+} from "./client.js";
 export {
   getProducts,
   getProductById,
@@ -9,6 +14,8 @@ export {
 export type {
   Category,
   Product,
+  ProductReview,
+  ProductSort,
   CartItem,
   Order,
   PricePoint,
