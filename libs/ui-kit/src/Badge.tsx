@@ -23,21 +23,21 @@ const Tag = styled.span<{ $tone: BadgeTone }>`
   ${(p) =>
     p.$tone === "success" &&
     css`
-      background: #dcfce7;
-      color: #166534;
+      background: ${colors.successBg};
+      color: ${colors.successText};
     `}
 
   ${(p) =>
     p.$tone === "warning" &&
     css`
-      background: #fef3c7;
-      color: #92400e;
+      background: ${colors.warningBg};
+      color: ${colors.warningText};
     `}
 
   ${(p) =>
     p.$tone === "danger" &&
     css`
-      background: #fee2e2;
+      background: ${colors.dangerBg};
       color: ${colors.danger};
     `}
 `;

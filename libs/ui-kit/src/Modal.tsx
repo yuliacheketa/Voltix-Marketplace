@@ -7,7 +7,7 @@ import { Button } from "./Button.js";
 const Backdrop = styled.div`
   position: fixed;
   inset: 0;
-  background: rgb(15 23 42 / 0.45);
+  background: ${colors.overlay};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +23,9 @@ const Panel = styled.div`
   width: 100%;
   max-height: 90vh;
   overflow: auto;
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  box-shadow:
+    0 25px 50px -12px rgb(0 0 0 / 0.2),
+    0 0 0 1px rgb(${colors.shadowTint} / 0.06);
   padding: 1.25rem;
 `;
 

@@ -7,7 +7,7 @@ const Shell = styled.div`
   border: 1px solid ${colors.ghostBorder};
   border-radius: 0.5rem;
   padding: 1rem;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+  box-shadow: 0 1px 3px rgb(${colors.shadowTint} / 0.1);
 `;
 
 export type CardProps = HTMLAttributes<HTMLDivElement>;

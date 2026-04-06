@@ -14,7 +14,7 @@ const StarBtn = styled.button<{ $active: boolean }>`
   cursor: pointer;
   font-size: 1.25rem;
   line-height: 1;
-  color: ${(p) => (p.$active ? colors.star : colors.ghostBorder)};
+  color: ${(p) => (p.$active ? colors.star : colors.primaryLight)};
   transition: color 0.15s ease;
 
   &:disabled {

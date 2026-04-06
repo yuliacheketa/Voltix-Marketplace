@@ -4,7 +4,7 @@ import { colors } from "./theme.js";
 
 const Text = styled.span<{ $large?: boolean }>`
   font-weight: 700;
-  color: ${colors.text};
+  color: ${colors.primary};
   font-size: ${(p) => (p.$large ? "1.25rem" : "1rem")};
 `;
 

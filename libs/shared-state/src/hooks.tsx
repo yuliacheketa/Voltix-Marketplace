@@ -1,8 +1,7 @@
 import { useStore } from "zustand/react";
 import type { CartItem } from "@voltix/api-client";
-import type { Product } from "@voltix/api-client";
+import { authStore } from "./authStore.js";
 import { cartStore, cartTotalPrice } from "./cartStore.js";
-import { compareStore } from "./compareStore.js";
 
 export function useCartStore<T>(
   selector: (s: ReturnType<typeof cartStore.getState>) => T
@@ -20,14 +19,18 @@ export function useCartTotalPrice(): number {
   );
 }
 
-export function useCompareStore<T>(
-  selector: (s: ReturnType<typeof compareStore.getState>) => T
+export function useAuthStore<T>(
+  selector: (s: ReturnType<typeof authStore.getState>) => T
 ): T {
-  return useStore(compareStore, selector);
+  return useStore(authStore, selector);
 }
 
-export function useCompareProducts(): Product[] {
-  return useStore(compareStore, (s) => s.products);
+export function useAuthUser() {
+  return useStore(authStore, (s) => s.user);
+}
+
+export function useAuthHydrated() {
+  return useStore(authStore, (s) => s.hydrated);
 }
 
 export { cartTotalPrice };

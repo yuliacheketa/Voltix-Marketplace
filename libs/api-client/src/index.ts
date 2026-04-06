@@ -1,17 +1,33 @@
-export { apiClient, getApiClient, JWT_STORAGE_KEY } from "./client.js";
+export {
+  apiClient,
+  authApiClient,
+  getApiClient,
+  getBaseURL,
+  getCatalogBaseURL,
+  getAuthBaseURL,
+  getAuthToken,
+  setAuthToken,
+  JWT_STORAGE_KEY,
+} from "./client.js";
+export { registerAuth, loginAuth, getMeAuth, verifyEmailAuth } from "./auth.js";
 export {
   getProducts,
   getProductById,
   getCategories,
   createOrder,
-  getPriceHistory,
 } from "./api.js";
 export type {
   Category,
   Product,
+  ProductReview,
+  ProductSort,
   CartItem,
   Order,
-  PricePoint,
   ProductFilters,
   CreateOrderPayload,
+  AuthUser,
+  AuthRole,
+  AuthSessionResponse,
+  SellerProfileSummary,
+  VerifyEmailResponse,
 } from "./types.js";

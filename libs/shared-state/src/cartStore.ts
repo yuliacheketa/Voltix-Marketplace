@@ -5,6 +5,7 @@ export type CartState = {
   items: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
+  clearCart: () => void;
 };
 
 function cartItemsTotal(items: CartItem[]): number {
@@ -21,9 +22,15 @@ export const cartStore = createStore<CartState>()((set) => ({
       const idx = state.items.findIndex((x) => x.productId === item.productId);
       if (idx >= 0) {
         const next = [...state.items];
+        const newQty = next[idx].quantity + item.quantity;
+        if (newQty <= 0) {
+          return {
+            items: state.items.filter((i) => i.productId !== item.productId),
+          };
+        }
         next[idx] = {
           ...next[idx],
-          quantity: next[idx].quantity + item.quantity,
+          quantity: newQty,
         };
         return { items: next };
       }
@@ -33,6 +40,7 @@ export const cartStore = createStore<CartState>()((set) => ({
     set((state) => ({
       items: state.items.filter((i) => i.productId !== productId),
     })),
+  clearCart: () => set({ items: [] }),
 }));
 
 export function cartTotalPrice(): number {

@@ -19,12 +19,12 @@ This project is managed as a **Monorepo** using npm workspaces, ensuring a unifi
 
 ## Shared libraries (`libs/`)
 
-| Package             | Name                   | Role                                                                |
-| ------------------- | ---------------------- | ------------------------------------------------------------------- |
-| `libs/utils`        | `@voltix/utils`        | Pure helpers (formatters, validators)                               |
-| `libs/api-client`   | `@voltix/api-client`   | Axios client, JWT header, typed API + `types.ts`                    |
-| `libs/shared-state` | `@voltix/shared-state` | Zustand cart/compare stores + vanilla `createStore` for Vue/Angular |
-| `libs/ui-kit`       | `@voltix/ui-kit`       | React UI (styled-components), Storybook on port **6006**            |
+| Package             | Name                   | Role                                                             |
+| ------------------- | ---------------------- | ---------------------------------------------------------------- |
+| `libs/utils`        | `@voltix/utils`        | Pure helpers (formatters, validators)                            |
+| `libs/api-client`   | `@voltix/api-client`   | Axios client, JWT header, typed API + `types.ts`                 |
+| `libs/shared-state` | `@voltix/shared-state` | Zustand cart store + vanilla `createStore` for Vue/React remotes |
+| `libs/ui-kit`       | `@voltix/ui-kit`       | React UI (styled-components), Storybook on port **6006**         |
 
 Build libraries before apps (or use root `npm run build`):
 

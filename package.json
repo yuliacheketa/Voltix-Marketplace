@@ -8,11 +8,13 @@
     "libs/*"
   ],
   "scripts": {
-    "dev": "concurrently -n catalog,shell -c blue,green \"npm run start -w catalog\" \"npm run start -w shell\"",
+    "dev": "concurrently -n catalog,checkout,auth,profile,seller,shell -c blue,magenta,cyan,yellow,red,green \"npm run start -w catalog\" \"npm run start -w @voltix/checkout\" \"npm run start -w @voltix/auth\" \"npm run start -w @voltix/profile\" \"npm run start -w @voltix/seller-dashboard\" \"wait-on -t 180000 http://127.0.0.1:3001/remoteEntry.js http://127.0.0.1:3002/remoteEntry.js http://127.0.0.1:3004/remoteEntry.js http://127.0.0.1:3005/remoteEntry.js http://127.0.0.1:3006/remoteEntry.js && npm run start -w shell\"",
+    "dev:remotes": "concurrently -n catalog,checkout,auth -c blue,magenta,cyan \"npm run start -w catalog\" \"npm run start -w @voltix/checkout\" \"npm run start -w @voltix/auth\"",
     "build:libs": "npm run build -w @voltix/utils && npm run build -w @voltix/api-client && npm run build -w @voltix/shared-state && npm run build -w @voltix/ui-kit",
-    "build": "npm run build:libs && npm run build -w shell && npm run build -w catalog",
+    "build": "npm run build:libs && npm run build -w shell && npm run build -w catalog && npm run build -w @voltix/checkout && npm run build -w @voltix/auth",
     "lint": "eslint \"apps/**/*.{js,jsx,ts,tsx}\" \"libs/**/*.{js,jsx,ts,tsx}\"",
     "format": "prettier --write .",
+    "prettier:fix": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "prettier": "^3.4.2",
+    "wait-on": "^8.0.1",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1"
   },
