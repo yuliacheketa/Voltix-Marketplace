@@ -90,6 +90,30 @@ module.exports = {
           requiredVersion: "^6.1.13",
           eager: true,
         },
+        zustand: {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "^5.0.3",
+          eager: true,
+        },
+        "@voltix/api-client": {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "0.0.0",
+          eager: true,
+        },
+        "@voltix/shared-state": {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "0.0.0",
+          eager: true,
+        },
+        "@voltix/shared-state/hooks": {
+          singleton: true,
+          strictVersion: false,
+          requiredVersion: "0.0.0",
+          eager: true,
+        },
       },
     }),
     new HtmlWebpackPlugin({

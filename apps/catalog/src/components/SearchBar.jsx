@@ -118,7 +118,7 @@ export function SearchBar() {
     <Wrap ref={wrapRef}>
       <Input
         type="search"
-        placeholder="Search products…"
+        placeholder="Пошук товарів…"
         value={value}
         onChange={onChange}
         onFocus={() => setOpen(true)}

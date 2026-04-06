@@ -134,7 +134,7 @@ export function ProductGrid() {
     return (
       <GridWrap>
         <ErrorText>
-          {error.message || "Could not load products. Check API_URL."}
+          {error.message || "Не вдалося завантажити товари. Перевірте API_URL."}
         </ErrorText>
       </GridWrap>
     );
@@ -144,11 +144,11 @@ export function ProductGrid() {
     <GridWrap>
       {loading && items.length === 0 ? (
         <LoadingRow>
-          <Spinner aria-label="Loading" />
+          <Spinner aria-label="Завантаження" />
         </LoadingRow>
       ) : null}
       {!loading && items.length === 0 ? (
-        <Message>No products match your filters.</Message>
+        <Message>Немає товарів за обраними фільтрами.</Message>
       ) : null}
       <Grid>
         {items.map((p) => (
@@ -158,7 +158,7 @@ export function ProductGrid() {
       {items.length > 0 ? <Sentinel ref={sentinelRef} aria-hidden /> : null}
       {loadingMore ? (
         <LoadingRow>
-          <Spinner aria-label="Loading more" />
+          <Spinner aria-label="Завантаження ще" />
         </LoadingRow>
       ) : null}
     </GridWrap>

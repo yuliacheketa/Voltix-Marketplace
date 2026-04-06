@@ -1,10 +1,10 @@
 <template>
   <div class="page">
-    <h1 class="h1">Payment</h1>
-    <p class="step">Step 3 of 4</p>
+    <h1 class="h1">Оплата</h1>
+    <p class="step">Крок 3 з 4</p>
     <form class="form" @submit.prevent="onSubmit">
       <label class="lbl">
-        Card number
+        Номер картки
         <IMaskComponent
           v-model="cardNumber"
           :mask="'0000 0000 0000 0000'"
@@ -16,7 +16,7 @@
       </label>
       <div class="row2">
         <label class="lbl">
-          Expiry (MM/YY)
+          Термін (ММ/РР)
           <IMaskComponent
             v-model="expiry"
             :mask="'00/00'"
@@ -39,8 +39,8 @@
         </label>
       </div>
       <div class="actions">
-        <router-link to="/checkout/delivery" class="link">Back</router-link>
-        <button type="submit" class="btn">Continue</button>
+        <router-link to="/checkout/delivery" class="link">Назад</router-link>
+        <button type="submit" class="btn">Далі</button>
       </div>
     </form>
   </div>
@@ -67,17 +67,17 @@ function onSubmit() {
   cvvErr.value = "";
   const digits = cardNumber.value.replace(/\D/g, "");
   if (!isValidCard(digits)) {
-    cardErr.value = "Invalid card number";
+    cardErr.value = "Некоректний номер картки";
     return;
   }
   const exp = expiry.value.replace(/\D/g, "");
   if (exp.length !== 4) {
-    expiryErr.value = "Use MM/YY";
+    expiryErr.value = "Формат ММ/РР";
     return;
   }
   const cv = cvv.value.replace(/\D/g, "");
   if (cv.length < 3) {
-    cvvErr.value = "Invalid CVV";
+    cvvErr.value = "Некоректний CVV";
     return;
   }
   checkoutFlow.payment = {

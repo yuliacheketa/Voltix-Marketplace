@@ -1,10 +1,10 @@
 <template>
   <div class="page">
-    <h1 class="h1">Contact &amp; shipping</h1>
-    <p class="step">Step 1 of 4</p>
+    <h1 class="h1">Контакти та доставка</h1>
+    <p class="step">Крок 1 з 4</p>
     <form class="form" @submit.prevent="onSubmit">
       <label class="lbl">
-        Full name
+        Повне імʼя
         <input
           v-model="fullName"
           v-bind="fullNameAttrs"
@@ -15,7 +15,7 @@
         <span v-if="errors.fullName" class="err">{{ errors.fullName }}</span>
       </label>
       <label class="lbl">
-        Email
+        Електронна пошта
         <input
           v-model="email"
           v-bind="emailAttrs"
@@ -26,7 +26,7 @@
         <span v-if="errors.email" class="err">{{ errors.email }}</span>
       </label>
       <label class="lbl">
-        Phone
+        Телефон
         <IMaskComponent
           v-model="phone"
           v-bind="phoneAttrs"
@@ -38,7 +38,7 @@
         <span v-if="errors.phone" class="err">{{ errors.phone }}</span>
       </label>
       <label class="lbl">
-        Street address
+        Вулиця, будинок
         <input
           v-model="street"
           v-bind="streetAttrs"
@@ -50,18 +50,18 @@
       </label>
       <div class="row2">
         <label class="lbl">
-          City
+          Місто
           <input v-model="city" v-bind="cityAttrs" type="text" class="inp" />
           <span v-if="errors.city" class="err">{{ errors.city }}</span>
         </label>
         <label class="lbl">
-          ZIP
+          Індекс
           <input v-model="zip" v-bind="zipAttrs" type="text" class="inp" />
           <span v-if="errors.zip" class="err">{{ errors.zip }}</span>
         </label>
       </div>
       <label class="lbl">
-        Country
+        Країна
         <input
           v-model="country"
           v-bind="countryAttrs"
@@ -72,8 +72,8 @@
         <span v-if="errors.country" class="err">{{ errors.country }}</span>
       </label>
       <div class="actions">
-        <router-link to="/cart" class="link">Back to cart</router-link>
-        <button type="submit" class="btn">Continue</button>
+        <router-link to="/cart" class="link">Назад до кошика</router-link>
+        <button type="submit" class="btn">Далі</button>
       </div>
     </form>
   </div>
@@ -92,19 +92,19 @@ const router = useRouter();
 
 const schema = toTypedSchema(
   yup.object({
-    fullName: yup.string().required("Required"),
+    fullName: yup.string().required("Обовʼязково"),
     email: yup
       .string()
-      .required("Required")
-      .test("em", "Invalid email", (v) => isValidEmail(v || "")),
+      .required("Обовʼязково")
+      .test("em", "Некоректний email", (v) => isValidEmail(v || "")),
     phone: yup
       .string()
-      .required("Required")
-      .test("ph", "Invalid phone", (v) => isValidPhone(v || "")),
-    street: yup.string().required("Required"),
-    city: yup.string().required("Required"),
-    zip: yup.string().required("Required"),
-    country: yup.string().required("Required"),
+      .required("Обовʼязково")
+      .test("ph", "Некоректний телефон", (v) => isValidPhone(v || "")),
+    street: yup.string().required("Обовʼязково"),
+    city: yup.string().required("Обовʼязково"),
+    zip: yup.string().required("Обовʼязково"),
+    country: yup.string().required("Обовʼязково"),
   })
 );
 

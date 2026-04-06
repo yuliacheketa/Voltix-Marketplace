@@ -4,7 +4,6 @@ import type {
   Category,
   CreateOrderPayload,
   Order,
-  PricePoint,
   Product,
   ProductFilters,
 } from "./types.js";
@@ -66,17 +65,5 @@ export async function createOrder(payload: CreateOrderPayload): Promise<Order> {
     return dummyJson.createOrder(payload);
   }
   const { data } = await apiClient.post<Order>("/orders", payload);
-  return data;
-}
-
-export async function getPriceHistory(
-  productId: string
-): Promise<PricePoint[]> {
-  if (!getBaseURL()) {
-    return dummyJson.getPriceHistory(productId);
-  }
-  const { data } = await apiClient.get<PricePoint[]>(
-    `/products/${productId}/price-history`
-  );
   return data;
 }

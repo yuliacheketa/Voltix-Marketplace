@@ -1,21 +1,23 @@
 <template>
   <div class="overlay" @click.self="close">
-    <aside class="panel" role="dialog" aria-label="Shopping cart">
+    <aside class="panel" role="dialog" aria-label="Кошик">
       <header class="head">
-        <h2 class="title">Cart</h2>
-        <button type="button" class="close" @click="close">×</button>
+        <h2 class="title">Кошик</h2>
+        <button type="button" class="close" @click="close" aria-label="Закрити">
+          ×
+        </button>
       </header>
-      <div v-if="items.length === 0" class="empty">Your cart is empty.</div>
+      <div v-if="items.length === 0" class="empty">Ваш кошик порожній.</div>
       <div v-else class="list">
         <CartItem v-for="it in items" :key="it.productId" :item="it" />
       </div>
       <footer v-if="items.length" class="foot">
         <div class="subrow">
-          <span>Subtotal</span>
+          <span>Підсумок</span>
           <strong>{{ subtotalFormatted }}</strong>
         </div>
         <router-link to="/checkout/contact" class="checkout-btn"
-          >Checkout</router-link
+          >Оформити замовлення</router-link
         >
       </footer>
     </aside>
@@ -52,7 +54,7 @@ onUnmounted(() => {
 });
 
 function close() {
-  router.push({ name: "home" });
+  router.back();
 }
 </script>
 
@@ -91,58 +93,54 @@ function close() {
 }
 .title {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   color: #1a1a34;
 }
 .close {
   border: none;
-  background: #f3f3fa;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.375rem;
+  background: transparent;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #333399;
+  color: #65657f;
+  padding: 0.25rem;
 }
 .close:hover {
-  background: #ebebf7;
-}
-.list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 1.25rem;
+  color: #1a1a34;
 }
 .empty {
-  flex: 1;
   padding: 2rem 1.25rem;
   color: #65657f;
   font-size: 0.9375rem;
 }
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 1rem;
+}
 .foot {
-  padding: 1rem 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   border-top: 1px solid #e2e2ef;
+  background: #fafaff;
 }
 .subrow {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
   font-size: 0.9375rem;
   color: #3a3a58;
-}
-.subrow strong {
-  color: #333399;
-  font-size: 1.05rem;
 }
 .checkout-btn {
   display: block;
   text-align: center;
+  font-weight: 600;
   padding: 0.65rem 1rem;
+  border-radius: 0.375rem;
   background: #333399;
   color: #fff;
-  font-weight: 600;
   text-decoration: none;
-  border-radius: 0.375rem;
+  font-size: 0.9375rem;
 }
 .checkout-btn:hover {
   background: #2a2a7a;

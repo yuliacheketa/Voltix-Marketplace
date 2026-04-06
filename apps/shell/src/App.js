@@ -1,10 +1,23 @@
-import React, { Suspense, lazy, useEffect, useRef } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { authStore } from "@voltix/shared-state";
+import { MicrofrontendHost } from "./components/MicrofrontendHost.jsx";
 import { ShellHeader } from "./components/ShellHeader.jsx";
+
+function AuthHydrate() {
+  useEffect(() => {
+    void authStore.getState().hydrate();
+  }, []);
+  return null;
+}
 
 const CatalogApp = lazy(() => import("catalog/CatalogApp"));
 const AuthApp = lazy(() => import("auth/AuthApp"));
+const ProfileApp = lazy(() => import("profile/ProfileApp"));
+const SellerDashboardApp = lazy(
+  () => import("sellerDashboard/SellerDashboardApp")
+);
 
 const Main = styled.main`
   padding: 32px 40px 7rem;
@@ -15,89 +28,96 @@ const MainRemote = styled.main`
   padding: 32px 40px 7rem;
 `;
 
-function CheckoutRoute() {
-  const ref = useRef(null);
-  const apiRef = useRef(null);
-  useEffect(() => {
-    let cancelled = false;
-    import("checkout/CheckoutApp")
-      .then((m) => {
-        if (cancelled || !ref.current) return;
-        apiRef.current = m.default;
-        apiRef.current.mount(ref.current);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-      apiRef.current?.unmount?.();
-      apiRef.current = null;
-    };
-  }, []);
-  return <div id="checkout-root" ref={ref} className="checkout-root-host" />;
+function loadCheckoutRemote() {
+  return import("checkout/CheckoutApp");
 }
 
-function CompareRoute() {
-  const ref = useRef(null);
-  const apiRef = useRef(null);
+function CheckoutRoute() {
+  return (
+    <MicrofrontendHost
+      remoteImport={loadCheckoutRemote}
+      hostId="checkout-root"
+      hostClassName="checkout-root-host"
+      startHint="Запустіть: npm run dev:remotes (з кореня) або npm run start -w @voltix/checkout (порт 3002)"
+    />
+  );
+}
+
+function AppShell() {
+  const navigate = useNavigate();
+
   useEffect(() => {
-    let cancelled = false;
-    import("compareMatrix/CompareApp")
-      .then((m) => {
-        if (cancelled || !ref.current) return;
-        apiRef.current = m.default;
-        apiRef.current.mount(ref.current);
-      })
-      .catch(() => {});
+    const onUnauthorized = () => navigate("/auth");
+    const onForbidden = () => navigate("/");
+    window.addEventListener("voltix:unauthorized", onUnauthorized);
+    window.addEventListener("voltix:forbidden", onForbidden);
     return () => {
-      cancelled = true;
-      apiRef.current?.unmount?.();
-      apiRef.current = null;
+      window.removeEventListener("voltix:unauthorized", onUnauthorized);
+      window.removeEventListener("voltix:forbidden", onForbidden);
     };
-  }, []);
-  return <div id="compare-root" ref={ref} className="compare-root-host" />;
+  }, [navigate]);
+
+  return (
+    <>
+      <ShellHeader />
+      <Routes>
+        <Route
+          path="/checkout/*"
+          element={
+            <MainRemote>
+              <CheckoutRoute />
+            </MainRemote>
+          }
+        />
+        <Route
+          path="/auth/*"
+          element={
+            <Main>
+              <Suspense fallback={<div>Завантаження…</div>}>
+                <AuthApp />
+              </Suspense>
+            </Main>
+          }
+        />
+        <Route
+          path="/profile/*"
+          element={
+            <Main>
+              <Suspense fallback={<div>Завантаження…</div>}>
+                <ProfileApp />
+              </Suspense>
+            </Main>
+          }
+        />
+        <Route
+          path="/seller/*"
+          element={
+            <Main>
+              <Suspense fallback={<div>Завантаження…</div>}>
+                <SellerDashboardApp />
+              </Suspense>
+            </Main>
+          }
+        />
+        <Route
+          path="/*"
+          element={
+            <Main>
+              <Suspense fallback={<div>Завантаження каталогу…</div>}>
+                <CatalogApp />
+              </Suspense>
+            </Main>
+          }
+        />
+      </Routes>
+    </>
+  );
 }
 
 const App = () => (
   <BrowserRouter>
-    <ShellHeader />
-    <Routes>
-      <Route
-        path="/checkout/*"
-        element={
-          <MainRemote>
-            <CheckoutRoute />
-          </MainRemote>
-        }
-      />
-      <Route
-        path="/compare/*"
-        element={
-          <MainRemote>
-            <CompareRoute />
-          </MainRemote>
-        }
-      />
-      <Route
-        path="/auth/*"
-        element={
-          <Main>
-            <Suspense fallback={<div>Loading…</div>}>
-              <AuthApp />
-            </Suspense>
-          </Main>
-        }
-      />
-      <Route
-        path="/*"
-        element={
-          <Main>
-            <Suspense fallback={<div>Loading catalog…</div>}>
-              <CatalogApp />
-            </Suspense>
-          </Main>
-        }
-      />
-    </Routes>
+    <AuthHydrate />
+    <AppShell />
   </BrowserRouter>
 );
 

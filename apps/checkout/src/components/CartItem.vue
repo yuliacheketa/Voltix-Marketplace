@@ -2,7 +2,7 @@
   <div class="row">
     <div class="thumb" aria-hidden="true" />
     <div class="meta">
-      <div class="name">{{ item.title || "Product" }}</div>
+      <div class="name">{{ item.title || "Товар" }}</div>
       <div class="price">{{ formattedUnit }}</div>
     </div>
     <div class="qty">
@@ -10,7 +10,7 @@
       <span class="qty-val">{{ item.quantity }}</span>
       <button type="button" class="qty-btn" @click="inc">+</button>
     </div>
-    <button type="button" class="del" @click="remove">Remove</button>
+    <button type="button" class="del" @click="remove">Видалити</button>
   </div>
 </template>
 

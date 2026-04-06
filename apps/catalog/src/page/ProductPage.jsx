@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Button, PriceTag, RatingStars, Spinner, colors } from "@voltix/ui-kit";
 import { formatDate } from "@voltix/utils";
 import { fetchProductById } from "../apiService/catalogApi.js";
-import { useCartStore, useCompareStore } from "@voltix/shared-state/hooks";
+import { useCartStore } from "@voltix/shared-state/hooks";
 
 const Page = styled.div`
   max-width: 56rem;
@@ -203,7 +203,6 @@ export function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const addItem = useCartStore((s) => s.addItem);
-  const addProduct = useCompareStore((s) => s.addProduct);
 
   useEffect(() => {
     let cancelled = false;
@@ -228,7 +227,7 @@ export function ProductPage() {
   if (loading) {
     return (
       <Page>
-        <Spinner aria-label="Loading product" />
+        <Spinner aria-label="Завантаження товару" />
       </Page>
     );
   }
@@ -236,8 +235,8 @@ export function ProductPage() {
   if (error || !product) {
     return (
       <Page>
-        <Back to="/">← Back to catalog</Back>
-        <ErrorText>{error?.message || "Product not found."}</ErrorText>
+        <Back to="/">← Назад до каталогу</Back>
+        <ErrorText>{error?.message || "Товар не знайдено."}</ErrorText>
       </Page>
     );
   }
@@ -258,13 +257,9 @@ export function ProductPage() {
     });
   };
 
-  const onCompare = () => {
-    addProduct(product);
-  };
-
   return (
     <Page>
-      <Back to="/">← Back to catalog</Back>
+      <Back to="/">← Назад до каталогу</Back>
       <Layout>
         <Gallery>
           <MainImg>
@@ -278,7 +273,7 @@ export function ProductPage() {
                   type="button"
                   $active={i === activeIdx}
                   onClick={() => setActiveIdx(i)}
-                  aria-label={`Image ${i + 1}`}
+                  aria-label={`Зображення ${i + 1}`}
                 >
                   <ThumbImg src={u} alt="" />
                 </ThumbBtn>
@@ -295,10 +290,7 @@ export function ProductPage() {
           {product.description ? <Desc>{product.description}</Desc> : null}
           <Actions>
             <Button type="button" variant="primary" onClick={onAddToCart}>
-              Add to cart
-            </Button>
-            <Button type="button" variant="secondary" onClick={onCompare}>
-              Compare
+              До кошика
             </Button>
           </Actions>
         </div>
@@ -306,7 +298,7 @@ export function ProductPage() {
       <BelowFold>
         {entries.length > 0 ? (
           <>
-            <SpecsHeading>Specifications</SpecsHeading>
+            <SpecsHeading>Характеристики</SpecsHeading>
             <SpecsTable>
               <tbody>
                 {entries.map(([k, v]) => (
@@ -319,9 +311,9 @@ export function ProductPage() {
             </SpecsTable>
           </>
         ) : null}
-        <ReviewsTitle>Reviews</ReviewsTitle>
+        <ReviewsTitle>Відгуки</ReviewsTitle>
         {reviews.length === 0 ? (
-          <EmptyReviews>No reviews yet.</EmptyReviews>
+          <EmptyReviews>Ще немає відгуків.</EmptyReviews>
         ) : (
           reviews.map((r) => (
             <ReviewCard key={r.id}>

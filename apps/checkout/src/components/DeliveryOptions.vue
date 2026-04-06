@@ -1,7 +1,7 @@
 <template>
   <div class="page">
-    <h1 class="h1">Delivery</h1>
-    <p class="step">Step 2 of 4</p>
+    <h1 class="h1">Доставка</h1>
+    <p class="step">Крок 2 з 4</p>
     <form class="form" @submit.prevent="next">
       <label
         v-for="opt in options"
@@ -19,14 +19,14 @@
         <div class="card-body">
           <div class="card-title">{{ opt.label }}</div>
           <div class="card-meta">
-            {{ opt.fee === 0 ? "Free" : formatPrice(opt.fee, "USD") }} · Est.
-            {{ opt.eta }}
+            {{ opt.fee === 0 ? "Безкоштовно" : formatPrice(opt.fee, "USD") }} ·
+            орієнт. {{ opt.eta }}
           </div>
         </div>
       </label>
       <div class="actions">
-        <router-link to="/checkout/contact" class="link">Back</router-link>
-        <button type="submit" class="btn">Continue</button>
+        <router-link to="/checkout/contact" class="link">Назад</router-link>
+        <button type="submit" class="btn">Далі</button>
       </div>
     </form>
   </div>
@@ -44,7 +44,7 @@ const selected = ref("standard");
 function addDays(n) {
   const d = new Date();
   d.setDate(d.getDate() + n);
-  return d.toLocaleDateString(undefined, {
+  return d.toLocaleDateString("uk-UA", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -54,21 +54,21 @@ function addDays(n) {
 const options = computed(() => [
   {
     id: "standard",
-    label: "Standard shipping",
+    label: "Стандартна доставка",
     fee: 0,
     eta: addDays(5),
   },
   {
     id: "express",
-    label: "Express",
+    label: "Експрес",
     fee: 9.99,
     eta: addDays(2),
   },
   {
     id: "pickup",
-    label: "Store pickup",
+    label: "Самовивіз з магазину",
     fee: 0,
-    eta: "Ready tomorrow",
+    eta: "завтра",
   },
 ]);
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Card, PriceTag, RatingStars, colors } from "@voltix/ui-kit";
-import { useCartStore, useCompareStore } from "@voltix/shared-state/hooks";
+import { useCartStore } from "@voltix/shared-state/hooks";
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -59,7 +59,6 @@ function primaryImage(product) {
 
 export function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem);
-  const addProduct = useCompareStore((s) => s.addProduct);
   const src = primaryImage(product);
   const rating = Math.min(5, Math.max(0, Math.round(product.rating ?? 0)));
 
@@ -70,10 +69,6 @@ export function ProductCard({ product }) {
       title: product.title,
       unitPrice: product.price,
     });
-  };
-
-  const onCompare = () => {
-    addProduct(product);
   };
 
   return (
@@ -89,10 +84,7 @@ export function ProductCard({ product }) {
         <RatingStars value={rating} readOnly />
         <Actions>
           <Button type="button" variant="primary" onClick={onAddToCart}>
-            Add to cart
-          </Button>
-          <Button type="button" variant="secondary" onClick={onCompare}>
-            Compare
+            До кошика
           </Button>
         </Actions>
       </Body>

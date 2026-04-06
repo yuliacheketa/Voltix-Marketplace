@@ -46,11 +46,6 @@ export interface Order {
   createdAt: string;
 }
 
-export interface PricePoint {
-  at: string;
-  price: number;
-}
-
 export interface ProductFilters {
   categoryId?: string;
   categoryIds?: string[];
@@ -67,4 +62,33 @@ export interface ProductFilters {
 export interface CreateOrderPayload {
   items: CartItem[];
   currency: string;
+}
+
+export type AuthRole = "CUSTOMER" | "SELLER" | "MODERATOR" | "ADMIN";
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  role: AuthRole;
+  isVerified: boolean;
+  createdAt: string;
+}
+
+export interface SellerProfileSummary {
+  id: string;
+  shopName: string;
+  status: string;
+}
+
+export interface AuthSessionResponse {
+  user: AuthUser;
+  token: string;
+  message?: string;
+  sellerProfile?: SellerProfileSummary;
+}
+
+export interface VerifyEmailResponse {
+  ok: boolean;
+  message: string;
 }

@@ -2,7 +2,6 @@ import type {
   Category,
   CreateOrderPayload,
   Order,
-  PricePoint,
   Product,
   ProductFilters,
   ProductReview,
@@ -206,24 +205,4 @@ export async function createOrder(payload: CreateOrderPayload): Promise<Order> {
     status: "demo",
     createdAt: new Date().toISOString(),
   };
-}
-
-export async function getPriceHistory(
-  productId: string
-): Promise<PricePoint[]> {
-  let price = 0;
-  try {
-    const p = await getProductById(productId);
-    price = p.price;
-  } catch {
-    return [];
-  }
-  const now = new Date();
-  return [
-    {
-      at: new Date(now.getTime() - 7 * 864e5).toISOString(),
-      price: Math.round(price * 0.95 * 100) / 100,
-    },
-    { at: now.toISOString(), price },
-  ];
 }

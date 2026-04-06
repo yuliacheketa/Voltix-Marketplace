@@ -1,9 +1,9 @@
 <template>
   <div class="page">
-    <h1 class="h1">Review order</h1>
-    <p class="step">Step 4 of 4</p>
+    <h1 class="h1">Перевірка замовлення</h1>
+    <p class="step">Крок 4 з 4</p>
     <section class="box">
-      <h2 class="h2">Items</h2>
+      <h2 class="h2">Товари</h2>
       <ul class="ul">
         <li v-for="it in items" :key="it.productId" class="li">
           <span>{{ it.title || it.productId }} × {{ it.quantity }}</span>
@@ -11,19 +11,19 @@
         </li>
       </ul>
       <div class="row">
-        <span>Delivery</span>
+        <span>Доставка</span>
         <span>{{ deliveryLabel }}</span>
       </div>
       <div class="row total">
-        <span>Total</span>
+        <span>Разом</span>
         <strong>{{ totalFormatted }}</strong>
       </div>
     </section>
     <p v-if="err" class="err">{{ err }}</p>
     <div class="actions">
-      <router-link to="/checkout/payment" class="link">Back</router-link>
+      <router-link to="/checkout/payment" class="link">Назад</router-link>
       <button type="button" class="btn" :disabled="busy" @click="place">
-        {{ busy ? "Placing…" : "Place order" }}
+        {{ busy ? "Оформлення…" : "Підтвердити замовлення" }}
       </button>
     </div>
   </div>
@@ -49,7 +49,9 @@ onMounted(() => {
 const deliveryFee = computed(() => checkoutFlow.delivery?.fee ?? 0);
 
 const deliveryLabel = computed(() =>
-  deliveryFee.value === 0 ? "Free" : formatPrice(deliveryFee.value, "USD")
+  deliveryFee.value === 0
+    ? "Безкоштовно"
+    : formatPrice(deliveryFee.value, "USD")
 );
 
 const subtotal = computed(() =>
@@ -67,7 +69,7 @@ function lineTotal(it) {
 async function place() {
   err.value = "";
   if (!items.value.length) {
-    err.value = "Cart is empty";
+    err.value = "Кошик порожній";
     return;
   }
   busy.value = true;
@@ -86,7 +88,7 @@ async function place() {
       query: { id: order.id },
     });
   } catch (e) {
-    err.value = e?.message || "Order failed";
+    err.value = e?.message || "Не вдалося оформити замовлення";
   } finally {
     busy.value = false;
   }

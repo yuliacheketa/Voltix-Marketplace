@@ -24,10 +24,10 @@ const Select = styled.select`
 `;
 
 const OPTIONS = [
-  { value: "price_asc", label: "Price: low to high" },
-  { value: "price_desc", label: "Price: high to low" },
-  { value: "rating", label: "Rating" },
-  { value: "newest", label: "Newest" },
+  { value: "price_asc", label: "Ціна: від дешевших" },
+  { value: "price_desc", label: "Ціна: від дорожчих" },
+  { value: "rating", label: "За рейтингом" },
+  { value: "newest", label: "Спочатку нові" },
 ];
 
 export function SortDropdown() {
@@ -51,8 +51,8 @@ export function SortDropdown() {
 
   return (
     <Label>
-      Sort by
-      <Select value={value} onChange={onChange} aria-label="Sort products">
+      Сортування
+      <Select value={value} onChange={onChange} aria-label="Сортувати товари">
         {OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}

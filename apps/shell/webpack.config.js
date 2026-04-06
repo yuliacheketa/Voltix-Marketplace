@@ -42,8 +42,9 @@ module.exports = {
       remotes: {
         catalog: "catalog@http://localhost:3001/remoteEntry.js",
         checkout: "checkout@http://localhost:3002/remoteEntry.js",
-        compareMatrix: "compareMatrix@http://localhost:3003/remoteEntry.js",
         auth: "auth@http://localhost:3004/remoteEntry.js",
+        profile: "profile@http://localhost:3005/remoteEntry.js",
+        sellerDashboard: "sellerDashboard@http://localhost:3006/remoteEntry.js",
       },
       shared: {
         react: {
@@ -129,72 +130,6 @@ module.exports = {
           strictVersion: false,
           requiredVersion: "0.0.0",
           eager: true,
-        },
-        "@angular/core": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/common": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/common/http": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/router": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/platform-browser": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/platform-browser-dynamic": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/animations": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        "@angular/animations/browser": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^17.3.0",
-          eager: false,
-        },
-        rxjs: {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^7.8.0",
-          eager: false,
-        },
-        "rxjs/operators": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^7.8.0",
-          eager: false,
-        },
-        "zone.js": {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^0.14.3",
-          eager: false,
         },
       },
     }),

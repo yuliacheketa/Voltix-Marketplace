@@ -1,8 +1,9 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { authStore } from "@voltix/shared-state";
+import { useAuthHydrated, useAuthUser } from "@voltix/shared-state/hooks";
 import { CartIcon } from "./CartIcon.jsx";
-import { CompareIcon } from "./CompareIcon.jsx";
 
 const Header = styled.header`
   padding: 18px 40px;
@@ -53,6 +54,32 @@ const NavLinkStyled = styled(NavLink)`
   }
 `;
 
+const UserName = styled.span`
+  font-size: 0.9rem;
+  font-weight: 600;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const LogOutBtn = styled.button`
+  color: #f0f0f8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.375rem;
+  background: rgb(255 255 255 / 0.12);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover {
+    background: rgb(255 255 255 / 0.22);
+  }
+`;
+
 const Icons = styled.div`
   display: flex;
   align-items: center;
@@ -60,17 +87,36 @@ const Icons = styled.div`
 `;
 
 export function ShellHeader() {
+  const hydrated = useAuthHydrated();
+  const user = useAuthUser();
+
   return (
     <Header>
       <Inner>
         <Brand to="/">Voltix Marketplace</Brand>
-        <Nav aria-label="Main">
-          <NavLinkStyled to="/checkout">Checkout</NavLinkStyled>
-          <NavLinkStyled to="/compare">Compare</NavLinkStyled>
-          <NavLinkStyled to="/auth">Sign in</NavLinkStyled>
+        <Nav aria-label="Головна навігація">
+          <NavLinkStyled to="/checkout">Оформити замовлення</NavLinkStyled>
+          {!hydrated || !user ? (
+            <NavLinkStyled to="/auth/login">Увійти</NavLinkStyled>
+          ) : (
+            <>
+              {user.role === "SELLER" ? (
+                <NavLinkStyled to="/seller">Seller Dashboard</NavLinkStyled>
+              ) : null}
+              <NavLinkStyled to="/profile">Мій профіль</NavLinkStyled>
+              <UserName title={user.email}>
+                {user.name?.trim() || user.email}
+              </UserName>
+              <LogOutBtn
+                type="button"
+                onClick={() => authStore.getState().clearSession()}
+              >
+                Вийти
+              </LogOutBtn>
+            </>
+          )}
           <Icons>
             <CartIcon />
-            <CompareIcon />
           </Icons>
         </Nav>
       </Inner>

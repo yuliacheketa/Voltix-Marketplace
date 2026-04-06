@@ -6,13 +6,14 @@ import PaymentForm from "./components/PaymentForm.vue";
 import OrderSummary from "./components/OrderSummary.vue";
 import OrderSuccess from "./components/OrderSuccess.vue";
 
-const EmptyHome = { template: '<div class="co-empty"></div>' };
-
 export function createCheckoutRouter() {
   return createRouter({
     history: createWebHashHistory(),
     routes: [
-      { path: "/", name: "home", component: EmptyHome },
+      {
+        path: "/",
+        redirect: () => ({ path: "/cart", replace: true }),
+      },
       { path: "/cart", name: "cart", component: CartDrawer },
       { path: "/checkout", redirect: "/checkout/contact" },
       {

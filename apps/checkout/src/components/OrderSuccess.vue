@@ -2,12 +2,12 @@
   <div class="page">
     <div class="card">
       <div class="icon" aria-hidden="true">✓</div>
-      <h1 class="h1">Order placed</h1>
+      <h1 class="h1">Замовлення оформлено</h1>
       <p class="txt">
-        Thank you! Your order ID is
+        Дякуємо! Номер замовлення:
         <strong class="id">{{ orderId || "—" }}</strong>
       </p>
-      <router-link to="/cart" class="btn">Back to cart</router-link>
+      <router-link to="/cart" class="btn">До кошика</router-link>
     </div>
   </div>
 </template>

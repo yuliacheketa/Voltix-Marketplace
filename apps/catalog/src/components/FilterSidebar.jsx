@@ -162,9 +162,9 @@ export function FilterSidebar() {
 
   return (
     <Aside>
-      <Title>Filters</Title>
+      <Title>Фільтри</Title>
       <Section>
-        <SectionLabel>Categories</SectionLabel>
+        <SectionLabel>Категорії</SectionLabel>
         {categories.map((c) => (
           <CheckRow key={c.id}>
             <input
@@ -177,12 +177,12 @@ export function FilterSidebar() {
         ))}
       </Section>
       <Section>
-        <SectionLabel>Price range</SectionLabel>
+        <SectionLabel>Діапазон цін</SectionLabel>
         <RangeRow>
           <RangeLabels>
-            <span>Min: ${minVal}</span>
+            <span>Від: ${minVal}</span>
             <span>
-              Max: $
+              До: $
               {maxVal >= PRICE_SLIDER_MAX ? `${PRICE_SLIDER_MAX}+` : maxVal}
             </span>
           </RangeLabels>
@@ -192,7 +192,7 @@ export function FilterSidebar() {
             max={PRICE_SLIDER_MAX}
             value={Math.min(minVal, maxVal)}
             onChange={onMinRange}
-            aria-label="Minimum price"
+            aria-label="Мінімальна ціна"
           />
           <input
             type="range"
@@ -200,23 +200,23 @@ export function FilterSidebar() {
             max={PRICE_SLIDER_MAX}
             value={Math.max(minVal, maxVal)}
             onChange={onMaxRange}
-            aria-label="Maximum price"
+            aria-label="Максимальна ціна"
           />
         </RangeRow>
       </Section>
       <Section>
-        <SectionLabel>Minimum rating</SectionLabel>
+        <SectionLabel>Мінімальний рейтинг</SectionLabel>
         <StarsSelect
           value={starsValue}
           onChange={(e) => setStars(Number(e.target.value))}
-          aria-label="Minimum star rating"
+          aria-label="Мінімальний рейтинг зірок"
         >
-          <option value={0}>Any</option>
-          <option value={1}>1+ stars</option>
-          <option value={2}>2+ stars</option>
-          <option value={3}>3+ stars</option>
-          <option value={4}>4+ stars</option>
-          <option value={5}>5 stars</option>
+          <option value={0}>Будь-який</option>
+          <option value={1}>1+ зірок</option>
+          <option value={2}>2+ зірок</option>
+          <option value={3}>3+ зірок</option>
+          <option value={4}>4+ зірок</option>
+          <option value={5}>5 зірок</option>
         </StarsSelect>
       </Section>
       <Section>
@@ -226,7 +226,7 @@ export function FilterSidebar() {
             checked={parsed.inStockOnly}
             onChange={toggleStock}
           />
-          In stock only
+          Лише в наявності
         </StockRow>
       </Section>
     </Aside>
