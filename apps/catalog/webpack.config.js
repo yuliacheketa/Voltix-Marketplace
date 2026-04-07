@@ -8,6 +8,7 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 3001,
+    host: "127.0.0.1",
     historyApiFallback: true,
     allowedHosts: "all",
     headers: {

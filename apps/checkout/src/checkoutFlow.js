@@ -1,7 +1,5 @@
-import { reactive } from "vue";
-
-export const checkoutFlow = reactive({
+export const checkoutFlow = {
   contact: null,
   delivery: null,
   payment: null,
-});
+};

@@ -32,57 +32,68 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+<script>
 import { formatPrice } from "@voltix/utils";
 import { checkoutFlow } from "../checkoutFlow.js";
 
-const router = useRouter();
-const selected = ref("standard");
-
-function addDays(n) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toLocaleDateString("uk-UA", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-const options = computed(() => [
-  {
-    id: "standard",
-    label: "Стандартна доставка",
-    fee: 0,
-    eta: addDays(5),
+export default {
+  name: "DeliveryOptions",
+  data() {
+    return {
+      selected: "standard",
+    };
   },
-  {
-    id: "express",
-    label: "Експрес",
-    fee: 9.99,
-    eta: addDays(2),
-  },
-  {
-    id: "pickup",
-    label: "Самовивіз з магазину",
-    fee: 0,
-    eta: "завтра",
-  },
-]);
+  computed: {
+    options() {
+      const addDays = (n) => {
+        const d = new Date();
+        d.setDate(d.getDate() + n);
+        return d.toLocaleDateString("uk-UA", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      };
 
-function next() {
-  const opt = options.value.find((o) => o.id === selected.value);
-  if (!opt) return;
-  checkoutFlow.delivery = {
-    method: opt.id,
-    label: opt.label,
-    fee: opt.fee,
-    etaLabel: opt.eta,
-  };
-  router.push({ name: "checkout-payment" });
-}
+      return [
+        {
+          id: "standard",
+          label: "Стандартна доставка",
+          fee: 0,
+          eta: addDays(5),
+        },
+        {
+          id: "express",
+          label: "Експрес",
+          fee: 9.99,
+          eta: addDays(2),
+        },
+        {
+          id: "pickup",
+          label: "Самовивіз з магазину",
+          fee: 0,
+          eta: "завтра",
+        },
+      ];
+    },
+  },
+  methods: {
+    formatPrice,
+    next() {
+      const opt = this.options.find((o) => o.id === this.selected);
+      if (!opt) return;
+
+      checkoutFlow.delivery = {
+        method: opt.id,
+        label: opt.label,
+        fee: opt.fee,
+        etaLabel: opt.eta,
+      };
+
+      this.$router.push({ name: "checkout-payment" });
+    },
+  },
+};
 </script>
 
 <style scoped>

@@ -7,6 +7,7 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 3000,
+    host: "127.0.0.1",
     historyApiFallback: true,
     allowedHosts: "all",
     headers: {
@@ -94,12 +95,6 @@ module.exports = {
           strictVersion: false,
           requiredVersion: "^5.0.3",
           eager: true,
-        },
-        vue: {
-          singleton: true,
-          strictVersion: false,
-          requiredVersion: "^3.5.13",
-          eager: false,
         },
         "@voltix/shared-state": {
           singleton: true,

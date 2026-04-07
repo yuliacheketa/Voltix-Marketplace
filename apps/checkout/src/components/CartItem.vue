@@ -14,40 +14,42 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from "vue";
+<script>
 import { formatPrice } from "@voltix/utils";
 import { cartStore } from "@voltix/shared-state";
 
-const props = defineProps({
-  item: { type: Object, required: true },
-});
-
-const formattedUnit = computed(() =>
-  formatPrice(props.item.unitPrice ?? 0, "USD")
-);
-
-function inc() {
-  cartStore.getState().addItem({
-    productId: props.item.productId,
-    quantity: 1,
-    title: props.item.title,
-    unitPrice: props.item.unitPrice,
-  });
-}
-
-function dec() {
-  cartStore.getState().addItem({
-    productId: props.item.productId,
-    quantity: -1,
-    title: props.item.title,
-    unitPrice: props.item.unitPrice,
-  });
-}
-
-function remove() {
-  cartStore.getState().removeItem(props.item.productId);
-}
+export default {
+  name: "CartItem",
+  props: {
+    item: { type: Object, required: true },
+  },
+  computed: {
+    formattedUnit() {
+      return formatPrice((this.item && this.item.unitPrice) || 0, "USD");
+    },
+  },
+  methods: {
+    inc() {
+      cartStore.getState().addItem({
+        productId: this.item.productId,
+        quantity: 1,
+        title: this.item.title,
+        unitPrice: this.item.unitPrice,
+      });
+    },
+    dec() {
+      cartStore.getState().addItem({
+        productId: this.item.productId,
+        quantity: -1,
+        title: this.item.title,
+        unitPrice: this.item.unitPrice,
+      });
+    },
+    remove() {
+      cartStore.getState().removeItem(this.item.productId);
+    },
+  },
+};
 </script>
 
 <style scoped>
