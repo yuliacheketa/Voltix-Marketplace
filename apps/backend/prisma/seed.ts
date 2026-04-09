@@ -12,6 +12,7 @@ import {
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { createOrderWithSellerOrders } from "../src/modules/order/order.service";
+import { getSeedProductTripleUrls } from "./productDemoImages";
 
 const prisma = new PrismaClient();
 
@@ -206,6 +207,94 @@ async function main() {
       position: 1,
     },
   });
+  await prisma.category.create({
+    data: {
+      name: "Tablets",
+      slug: "tablets",
+      parentId: catElectronics.id,
+      position: 2,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Headphones",
+      slug: "headphones",
+      parentId: catElectronics.id,
+      position: 3,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Men",
+      slug: "men",
+      parentId: catClothing.id,
+      position: 0,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Women",
+      slug: "women",
+      parentId: catClothing.id,
+      position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Kids",
+      slug: "kids",
+      parentId: catClothing.id,
+      position: 2,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Furniture",
+      slug: "furniture",
+      parentId: catHome.id,
+      position: 0,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Kitchen",
+      slug: "kitchen",
+      parentId: catHome.id,
+      position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Decor",
+      slug: "decor",
+      parentId: catHome.id,
+      position: 2,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Fitness",
+      slug: "fitness",
+      parentId: catSports.id,
+      position: 0,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Outdoor",
+      slug: "outdoor",
+      parentId: catSports.id,
+      position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Team Sports",
+      slug: "team-sports",
+      parentId: catSports.id,
+      position: 2,
+    },
+  });
 
   const productDefs = [
     {
@@ -307,25 +396,26 @@ async function main() {
       },
     });
 
+    const [u0, u1, u2] = getSeedProductTripleUrls(def.slug);
     await prisma.productImage.createMany({
       data: [
         {
           productId: p.id,
-          url: `https://picsum.photos/seed/${def.slug}-1/800/600`,
+          url: u0,
           altText: `${def.name} main`,
           isMain: true,
           position: 0,
         },
         {
           productId: p.id,
-          url: `https://picsum.photos/seed/${def.slug}-2/800/600`,
+          url: u1,
           altText: `${def.name} angle`,
           isMain: false,
           position: 1,
         },
         {
           productId: p.id,
-          url: `https://picsum.photos/seed/${def.slug}-3/800/600`,
+          url: u2,
           altText: `${def.name} detail`,
           isMain: false,
           position: 2,

@@ -2,8 +2,18 @@ import { Router } from "express";
 import { asyncRoute } from "../../middleware/asyncRoute";
 import { requireAuth } from "../../middleware/requireAuth";
 import { validateBody } from "../../middleware/validate";
-import { login, me, register, verifyEmail } from "./auth.controller";
-import { loginSchema, registerSchema } from "./auth.validation";
+import {
+  login,
+  me,
+  refreshToken,
+  register,
+  verifyEmail,
+} from "./auth.controller";
+import {
+  loginSchema,
+  refreshTokenSchema,
+  registerSchema,
+} from "./auth.validation";
 
 export const authRouter = Router();
 
@@ -14,6 +24,12 @@ authRouter.post(
 );
 
 authRouter.post("/login", validateBody(loginSchema), asyncRoute(login));
+
+authRouter.post(
+  "/refresh",
+  validateBody(refreshTokenSchema),
+  asyncRoute(refreshToken)
+);
 
 authRouter.get("/verify-email", asyncRoute(verifyEmail));
 

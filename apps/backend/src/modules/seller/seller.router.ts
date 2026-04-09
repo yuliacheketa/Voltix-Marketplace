@@ -1,6 +1,7 @@
 import { Role } from "@prisma/client";
 import { Router } from "express";
 import { requireAuth } from "../../middleware/requireAuth";
+import { requireActiveSeller } from "../../middleware/requireActiveSeller";
 import { requireRole } from "../../middleware/requireRole";
 import { validateBody } from "../../middleware/validate";
 import * as sellerController from "./seller.controller";
@@ -15,6 +16,7 @@ export const sellerRouter = Router();
 
 sellerRouter.use(requireAuth);
 sellerRouter.use(requireRole(Role.SELLER));
+sellerRouter.use(requireActiveSeller);
 
 sellerRouter.get("/me", sellerController.getMe);
 sellerRouter.patch(

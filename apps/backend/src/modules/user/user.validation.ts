@@ -2,10 +2,21 @@ import { z } from "zod";
 
 const e164 = z.string().regex(/^\+[1-9]\d{1,14}$/);
 
+const uploadedAvatarPath = z
+  .string()
+  .max(320)
+  .regex(/^\/api\/uploads\/avatars\/[a-zA-Z0-9._-]+$/);
+
+const avatarUrlField = z.union([
+  z.string().url().max(500),
+  uploadedAvatarPath,
+  z.null(),
+]);
+
 export const updateProfileSchema = z.object({
   name: z.string().trim().min(2).max(100).optional(),
   phone: z.union([e164, z.null()]).optional(),
-  avatarUrl: z.union([z.string().url().max(500), z.null()]).optional(),
+  avatarUrl: avatarUrlField.optional(),
 });
 
 export const changePasswordSchema = z

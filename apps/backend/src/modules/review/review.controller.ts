@@ -8,11 +8,11 @@ export async function postReview(
   res: Response,
   _next: NextFunction
 ) {
-  const auth = req.authUser;
-  if (!auth) {
-    throw new HttpError(401, "Потрібна авторизація");
+  const userId = req.user?.userId;
+  if (!userId) {
+    throw new HttpError(401, "Unauthorized");
   }
   const body = req.body as CreateReviewBody;
-  const review = await createReview(auth.id, body);
-  return res.status(201).json({ review });
+  const data = await createReview(userId, body);
+  return res.status(201).json(data);
 }

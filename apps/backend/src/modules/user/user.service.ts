@@ -1,13 +1,31 @@
 import type { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import fs from "fs/promises";
+import path from "path";
 import { prisma } from "../../lib/prisma";
 import { HttpError } from "../../middleware/errorHandler";
+import { AVATAR_PUBLIC_PREFIX, AVATARS_DIR } from "./user.avatarStorage";
 import type {
   ChangePasswordBody,
   CreateAddressBody,
   UpdateAddressBody,
   UpdateProfileBody,
 } from "./user.validation";
+
+async function unlinkIfLocalAvatar(url: string | null) {
+  if (!url?.startsWith(AVATAR_PUBLIC_PREFIX)) return;
+  const name = url.slice(AVATAR_PUBLIC_PREFIX.length);
+  if (
+    !name ||
+    name.includes("..") ||
+    name.includes("/") ||
+    name.includes("\\")
+  ) {
+    return;
+  }
+  const filePath = path.join(AVATARS_DIR, name);
+  await fs.unlink(filePath).catch(() => {});
+}
 
 export async function getProfile(userId: string) {
   const user = await prisma.user.findUnique({
@@ -45,6 +63,25 @@ export async function getProfile(userId: string) {
   return { user, addresses };
 }
 
+export async function listAddressesForUser(userId: string) {
+  return prisma.address.findMany({
+    where: { userId },
+    orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+    select: {
+      id: true,
+      label: true,
+      fullName: true,
+      phone: true,
+      street: true,
+      city: true,
+      state: true,
+      zip: true,
+      country: true,
+      isDefault: true,
+    },
+  });
+}
+
 const profileSelect = {
   id: true,
   email: true,
@@ -57,6 +94,16 @@ const profileSelect = {
 } satisfies Prisma.UserSelect;
 
 export async function updateProfile(userId: string, body: UpdateProfileBody) {
+  const existing = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { avatarUrl: true },
+  });
+  if (!existing) {
+    throw new HttpError(404, "User not found");
+  }
+  if (body.avatarUrl !== undefined && body.avatarUrl !== existing.avatarUrl) {
+    await unlinkIfLocalAvatar(existing.avatarUrl);
+  }
   const data: Prisma.UserUpdateInput = {};
   if (body.name !== undefined) {
     data.name = body.name;
@@ -70,6 +117,26 @@ export async function updateProfile(userId: string, body: UpdateProfileBody) {
   return prisma.user.update({
     where: { id: userId },
     data,
+    select: profileSelect,
+  });
+}
+
+export async function replaceAvatarWithUpload(
+  userId: string,
+  filename: string
+) {
+  const existing = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { avatarUrl: true },
+  });
+  if (!existing) {
+    throw new HttpError(404, "User not found");
+  }
+  await unlinkIfLocalAvatar(existing.avatarUrl);
+  const newUrl = `${AVATAR_PUBLIC_PREFIX}${filename}`;
+  return prisma.user.update({
+    where: { id: userId },
+    data: { avatarUrl: newUrl },
     select: profileSelect,
   });
 }
@@ -107,7 +174,11 @@ export async function listOrders(userId: string, page: number, limit: number) {
       skip,
       take: limit,
       include: {
-        items: true,
+        items: {
+          include: {
+            review: { select: { id: true } },
+          },
+        },
         payment: { select: { status: true } },
       },
     }),
@@ -120,11 +191,13 @@ export async function listOrders(userId: string, page: number, limit: number) {
     deliveryCost: o.deliveryCost.toString(),
     createdAt: o.createdAt,
     items: o.items.map((i) => ({
+      id: i.id,
       productName: i.productName,
       variantName: i.variantName,
       quantity: i.quantity,
       unitPrice: i.unitPrice.toString(),
       totalPrice: i.totalPrice.toString(),
+      reviewed: i.review != null,
     })),
     payment: o.payment ? { status: o.payment.status } : null,
   }));

@@ -1,4 +1,3 @@
-import { randomBytes } from "crypto";
 import { Role, SellerStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt, { type SignOptions } from "jsonwebtoken";
@@ -41,6 +40,7 @@ function publicUserFields(user: {
   role: Role;
   isVerified: boolean;
   createdAt: Date;
+  avatarUrl: string | null;
 }) {
   return {
     id: user.id,
@@ -49,6 +49,7 @@ function publicUserFields(user: {
     role: user.role,
     isVerified: user.isVerified,
     createdAt: user.createdAt,
+    avatarUrl: user.avatarUrl,
   };
 }
 
@@ -60,7 +61,6 @@ export async function registerUser(input: RegisterInput) {
   const email = input.email.toLowerCase();
   const name = email.split("@")[0] || "User";
   const role = input.role;
-  const emailVerificationToken = randomBytes(32).toString("hex");
 
   const { user, sellerProfile } = await prisma.$transaction(async (tx) => {
     const created = await tx.user.create({
@@ -69,8 +69,8 @@ export async function registerUser(input: RegisterInput) {
         passwordHash,
         name,
         role,
-        isVerified: false,
-        emailVerificationToken,
+        isVerified: true,
+        emailVerificationToken: null,
       },
       select: {
         id: true,
@@ -79,6 +79,7 @@ export async function registerUser(input: RegisterInput) {
         role: true,
         isVerified: true,
         createdAt: true,
+        avatarUrl: true,
       },
     });
     await tx.cart.create({ data: { userId: created.id } });
@@ -96,16 +97,6 @@ export async function registerUser(input: RegisterInput) {
     return { user: created, sellerProfile: null };
   });
 
-  if (process.env.NODE_ENV !== "production") {
-    console.log(
-      `[auth] Email verification (API): ${getVerificationLogUrl(emailVerificationToken)}`
-    );
-    const spaOrigin = process.env.AUTH_APP_ORIGIN ?? "http://localhost:3000";
-    console.log(
-      `[auth] Email verification (UI): ${spaOrigin}/auth/verify-email?token=${encodeURIComponent(emailVerificationToken)}`
-    );
-  }
-
   const token = signAccessToken({
     id: user.id,
     email: user.email,
@@ -113,20 +104,16 @@ export async function registerUser(input: RegisterInput) {
     isVerified: user.isVerified,
   });
   const userPayload = publicUserFields(user);
-  const message =
-    "Обліковий запис створено. Підтвердьте email: у режимі розробки посилання виводиться в консолі API та нижче можна відкрити сторінку підтвердження.";
   if (sellerProfile) {
     return {
       user: userPayload,
       token,
       sellerProfile,
-      message,
     };
   }
   return {
     user: userPayload,
     token,
-    message,
   };
 }
 
@@ -156,11 +143,14 @@ export async function loginUser(input: LoginInput) {
     where: { email: input.email.toLowerCase() },
   });
   if (!user) {
-    throw new HttpError(401, "Невірний email або пароль");
+    throw new HttpError(401, "Invalid credentials");
   }
   const ok = await bcrypt.compare(input.password, user.passwordHash);
   if (!ok) {
-    throw new HttpError(401, "Невірний email або пароль");
+    throw new HttpError(401, "Invalid credentials");
+  }
+  if (!user.isActive) {
+    throw new HttpError(403, "Account is deactivated");
   }
   const token = signAccessToken({
     id: user.id,
@@ -176,6 +166,7 @@ export async function loginUser(input: LoginInput) {
       role: user.role,
       isVerified: user.isVerified,
       createdAt: user.createdAt,
+      avatarUrl: user.avatarUrl,
     }),
     token,
   };
@@ -191,12 +182,62 @@ export async function getUserProfile(userId: string) {
       role: true,
       isVerified: true,
       createdAt: true,
+      avatarUrl: true,
     },
   });
   if (!user) {
     throw new HttpError(404, "Користувача не знайдено");
   }
   return user;
+}
+
+export function refreshAccessToken(existingToken: string) {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET is not set");
+  }
+  let payload: jwt.JwtPayload;
+  try {
+    const decoded = jwt.verify(existingToken, secret);
+    if (
+      typeof decoded === "string" ||
+      decoded == null ||
+      typeof decoded !== "object"
+    ) {
+      throw new HttpError(401, "Unauthorized");
+    }
+    payload = decoded as jwt.JwtPayload;
+  } catch (e) {
+    if (e instanceof jwt.TokenExpiredError) {
+      throw new HttpError(401, "Unauthorized");
+    }
+    if (e instanceof HttpError) {
+      throw e;
+    }
+    throw new HttpError(401, "Unauthorized");
+  }
+  const sub = payload.sub;
+  if (typeof sub !== "string") {
+    throw new HttpError(401, "Unauthorized");
+  }
+  const email = payload.email;
+  if (typeof email !== "string") {
+    throw new HttpError(401, "Unauthorized");
+  }
+  const roleRaw = payload.role;
+  const role =
+    typeof roleRaw === "string" &&
+    (Object.values(Role) as string[]).includes(roleRaw)
+      ? (roleRaw as Role)
+      : Role.CUSTOMER;
+  const isVerified = Boolean(payload.isVerified);
+  const token = signAccessToken({
+    id: sub,
+    email,
+    role,
+    isVerified,
+  });
+  return { token };
 }
 
 export function getVerificationLogUrl(token: string) {

@@ -3,10 +3,15 @@ import { HttpError } from "../../middleware/errorHandler";
 import {
   getUserProfile,
   loginUser,
+  refreshAccessToken,
   registerUser,
   verifyEmailByToken,
 } from "./auth.service";
-import type { LoginInput, RegisterInput } from "./auth.validation";
+import type {
+  LoginInput,
+  RefreshTokenBody,
+  RegisterInput,
+} from "./auth.validation";
 import { verifyEmailQuerySchema } from "./auth.validation";
 
 export async function register(
@@ -67,4 +72,21 @@ export async function verifyEmail(
   }
   const result = await verifyEmailByToken(parsed.data.token);
   return res.json(result);
+}
+
+export async function refreshToken(
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) {
+  const body = req.body as RefreshTokenBody;
+  try {
+    const { token } = refreshAccessToken(body.token);
+    return res.json({ token });
+  } catch (e) {
+    if (e instanceof Error && e.message === "JWT_SECRET is not set") {
+      throw new HttpError(500, "Помилка конфігурації сервера");
+    }
+    throw e;
+  }
 }

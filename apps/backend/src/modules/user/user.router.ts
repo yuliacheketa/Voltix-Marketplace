@@ -1,7 +1,8 @@
-import { Router } from "express";
+import { Router, type RequestHandler } from "express";
 import { requireAuth } from "../../middleware/requireAuth";
 import { validateBody } from "../../middleware/validate";
 import * as userController from "./user.controller";
+import { avatarUpload } from "./user.avatarUpload";
 import {
   changePasswordSchema,
   createAddressSchema,
@@ -14,6 +15,12 @@ export const userRouter = Router();
 userRouter.use(requireAuth);
 
 userRouter.get("/me", userController.getMe);
+userRouter.get("/me/addresses", userController.getMyAddresses);
+userRouter.post(
+  "/me/avatar",
+  avatarUpload.single("avatar") as unknown as RequestHandler,
+  userController.postMyAvatar
+);
 userRouter.patch(
   "/me",
   validateBody(updateProfileSchema),

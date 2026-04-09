@@ -15,10 +15,35 @@ export async function getMe(req: Request, res: Response) {
   });
 }
 
+export async function getMyAddresses(req: Request, res: Response) {
+  const userId = req.user!.userId;
+  const addresses = await userService.listAddressesForUser(userId);
+  return res.status(200).json({
+    success: true,
+    data: { addresses },
+  });
+}
+
 export async function patchMe(req: Request, res: Response) {
   const userId = req.user!.userId;
   const body = req.body as UpdateProfileBody;
   const user = await userService.updateProfile(userId, body);
+  return res.status(200).json({
+    success: true,
+    data: { user },
+  });
+}
+
+export async function postMyAvatar(req: Request, res: Response) {
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json({
+      success: false,
+      errors: [{ message: "Файл не надіслано" }],
+    });
+  }
+  const userId = req.user!.userId;
+  const user = await userService.replaceAvatarWithUpload(userId, file.filename);
   return res.status(200).json({
     success: true,
     data: { user },
