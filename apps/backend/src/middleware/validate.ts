@@ -1,24 +1,20 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ZodSchema, ZodTypeAny } from "zod";
-import { ZodError } from "zod";
 
 export function validateBody<T>(schema: ZodSchema<T>) {
   return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      req.body = schema.parse(req.body) as Request["body"];
-      next();
-    } catch (err) {
-      if (err instanceof ZodError) {
-        return res.status(400).json({
-          success: false,
-          errors: err.issues.map((i) => ({
-            field: i.path.length ? i.path.join(".") : "body",
-            message: i.message,
-          })),
-        });
-      }
-      next(err);
+    const r = schema.safeParse(req.body);
+    if (!r.success) {
+      return res.status(400).json({
+        success: false,
+        errors: r.error.issues.map((i) => ({
+          field: i.path.length ? i.path.join(".") : "body",
+          message: i.message,
+        })),
+      });
     }
+    req.body = r.data as Request["body"];
+    next();
   };
 }
 

@@ -28,6 +28,7 @@ export async function getMe(req: Request, res: Response) {
   const profile = await sellerService.getMeResponse(userId);
   if (!profile) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -48,6 +49,7 @@ export async function patchMe(req: Request, res: Response) {
   } catch (e) {
     if (e instanceof HttpError && e.statusCode === 409) {
       return res.status(409).json({
+        success: false,
         errors: [{ field: "shopName", message: "Shop name already taken" }],
       });
     }
@@ -59,13 +61,17 @@ export async function getProducts(req: Request, res: Response) {
   const parsed = productsQuerySchema.safeParse(req.query);
   if (!parsed.success) {
     return res.status(400).json({
-      message: "Помилка валідації",
-      errors: parsed.error.flatten(),
+      success: false,
+      errors: parsed.error.issues.map((i) => ({
+        field: i.path.length ? i.path.join(".") : "query",
+        message: i.message,
+      })),
     });
   }
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -77,6 +83,7 @@ export async function getProduct(req: Request, res: Response) {
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -85,7 +92,10 @@ export async function getProduct(req: Request, res: Response) {
     String(req.params.productId)
   );
   if (!product) {
-    return res.status(404).json({ errors: [{ message: "Product not found" }] });
+    return res.status(404).json({
+      success: false,
+      errors: [{ message: "Product not found" }],
+    });
   }
   return res.json({
     success: true,
@@ -133,6 +143,7 @@ export async function postProduct(req: Request, res: Response) {
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -145,6 +156,7 @@ export async function patchProduct(req: Request, res: Response) {
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -156,9 +168,10 @@ export async function patchProduct(req: Request, res: Response) {
       body
     );
     if (!updated) {
-      return res
-        .status(404)
-        .json({ errors: [{ message: "Product not found" }] });
+      return res.status(404).json({
+        success: false,
+        errors: [{ message: "Product not found" }],
+      });
     }
     return res.json({
       success: true,
@@ -167,6 +180,7 @@ export async function patchProduct(req: Request, res: Response) {
   } catch (e) {
     if (e instanceof HttpError) {
       return res.status(e.statusCode).json({
+        success: false,
         errors: [{ message: e.message }],
       });
     }
@@ -178,6 +192,7 @@ export async function deleteProduct(req: Request, res: Response) {
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -186,22 +201,33 @@ export async function deleteProduct(req: Request, res: Response) {
     String(req.params.productId)
   );
   if (!result) {
-    return res.status(404).json({ errors: [{ message: "Product not found" }] });
+    return res.status(404).json({
+      success: false,
+      errors: [{ message: "Product not found" }],
+    });
   }
-  return res.json({ success: true, message: "Product archived" });
+  return res.json({
+    success: true,
+    data: {},
+    message: "Product archived",
+  });
 }
 
 export async function getOrders(req: Request, res: Response) {
   const parsed = sellerOrdersQuerySchema.safeParse(req.query);
   if (!parsed.success) {
     return res.status(400).json({
-      message: "Помилка валідації",
-      errors: parsed.error.flatten(),
+      success: false,
+      errors: parsed.error.issues.map((i) => ({
+        field: i.path.length ? i.path.join(".") : "query",
+        message: i.message,
+      })),
     });
   }
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -213,6 +239,7 @@ export async function patchOrderStatus(req: Request, res: Response) {
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }
@@ -224,7 +251,10 @@ export async function patchOrderStatus(req: Request, res: Response) {
       body.status
     );
     if (!order) {
-      return res.status(404).json({ errors: [{ message: "Order not found" }] });
+      return res.status(404).json({
+        success: false,
+        errors: [{ message: "Order not found" }],
+      });
     }
     return res.json({
       success: true,
@@ -242,6 +272,7 @@ export async function patchOrderStatus(req: Request, res: Response) {
   } catch (e) {
     if (e instanceof HttpError) {
       return res.status(e.statusCode).json({
+        success: false,
         errors: [{ message: e.message }],
       });
     }
@@ -253,6 +284,7 @@ export async function getStats(req: Request, res: Response) {
   const sellerId = await sellerProfileId(req);
   if (!sellerId) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Seller profile not found" }],
     });
   }

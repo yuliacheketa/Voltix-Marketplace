@@ -43,13 +43,16 @@ app.use(
 
 app.get("/", (_req, res) => {
   res.json({
-    name: "voltix-api",
-    health: "GET /health",
+    success: true,
+    data: {
+      name: "voltix-api",
+      health: "GET /health",
+    },
   });
 });
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true });
+  res.json({ success: true, data: { ok: true } });
 });
 
 app.use("/api/auth", authRouter);

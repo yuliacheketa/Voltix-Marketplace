@@ -6,6 +6,10 @@ export const catalogRouter = Router();
 
 catalogRouter.get("/products", asyncRoute(catalogController.getProducts));
 catalogRouter.get(
+  "/products/price-range",
+  asyncRoute(catalogController.getProductsPriceRange)
+);
+catalogRouter.get(
   "/products/:slug/reviews",
   asyncRoute(catalogController.getProductReviews)
 );

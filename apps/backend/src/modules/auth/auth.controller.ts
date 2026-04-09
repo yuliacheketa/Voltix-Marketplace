@@ -22,7 +22,7 @@ export async function register(
   const body = req.body as RegisterInput;
   try {
     const result = await registerUser(body);
-    return res.status(201).json(result);
+    return res.status(201).json({ success: true, data: result });
   } catch (e) {
     if (e instanceof Error && e.message === "FORBIDDEN_ROLE") {
       return res.status(403).json({
@@ -43,7 +43,7 @@ export async function login(req: Request, res: Response, _next: NextFunction) {
   const body = req.body as LoginInput;
   try {
     const result = await loginUser(body);
-    return res.json(result);
+    return res.json({ success: true, data: result });
   } catch (e) {
     if (e instanceof Error && e.message === "JWT_SECRET is not set") {
       throw new HttpError(500, "Помилка конфігурації сервера");
@@ -58,7 +58,7 @@ export async function me(req: Request, res: Response, _next: NextFunction) {
     throw new HttpError(401, "Потрібна авторизація");
   }
   const user = await getUserProfile(auth.id);
-  return res.json({ user });
+  return res.json({ success: true, data: { user } });
 }
 
 export async function verifyEmail(
@@ -68,10 +68,17 @@ export async function verifyEmail(
 ) {
   const parsed = verifyEmailQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    return res.status(400).json({ message: "Некоректний або відсутній токен" });
+    return res.status(400).json({
+      success: false,
+      errors: [{ message: "Некоректний або відсутній токен" }],
+    });
   }
   const result = await verifyEmailByToken(parsed.data.token);
-  return res.json(result);
+  return res.json({
+    success: true,
+    data: { ok: result.ok },
+    message: result.message,
+  });
 }
 
 export async function refreshToken(
@@ -82,7 +89,7 @@ export async function refreshToken(
   const body = req.body as RefreshTokenBody;
   try {
     const { token } = refreshAccessToken(body.token);
-    return res.json({ token });
+    return res.json({ success: true, data: { token } });
   } catch (e) {
     if (e instanceof Error && e.message === "JWT_SECRET is not set") {
       throw new HttpError(500, "Помилка конфігурації сервера");

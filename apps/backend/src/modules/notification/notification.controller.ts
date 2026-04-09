@@ -34,7 +34,7 @@ export async function patchRead(req: Request, res: Response) {
     });
   }
   await notificationService.markNotificationRead(userId, id.data);
-  return res.json({ success: true });
+  return res.json({ success: true, data: {} });
 }
 
 export async function patchReadAll(req: Request, res: Response) {

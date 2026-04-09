@@ -327,9 +327,6 @@ export async function addCartItem(userId: string, body: AddCartItemBody) {
   if (!v) {
     throw new HttpError(400, "Invalid variant for product");
   }
-  if (body.quantity > v.stock) {
-    throw new HttpError(400, "Not enough stock");
-  }
   const cartId = await ensureCartForUser(userId);
   const existing = await prisma.cartItem.findFirst({
     where: {
@@ -338,16 +335,20 @@ export async function addCartItem(userId: string, body: AddCartItemBody) {
       variantId,
     },
   });
-  const newQty = existing ? existing.quantity + body.quantity : body.quantity;
-  if (newQty > v.stock) {
-    throw new HttpError(400, "Not enough stock");
-  }
   if (existing) {
+    const desired = existing.quantity + body.quantity;
+    const finalQty = Math.min(desired, v.stock);
     await prisma.cartItem.update({
       where: { id: existing.id },
-      data: { quantity: newQty },
+      data: { quantity: finalQty },
     });
   } else {
+    if (body.quantity > v.stock) {
+      throw new HttpError(400, "Not enough stock", {
+        success: false,
+        errors: [{ message: "Not enough stock" }],
+      });
+    }
     await prisma.cartItem.create({
       data: {
         cartId,
@@ -376,7 +377,10 @@ export async function patchCartItem(
     throw new HttpError(404, "Not found");
   }
   if (body.quantity > item.variant.stock) {
-    throw new HttpError(400, "Not enough stock");
+    throw new HttpError(400, "Not enough stock", {
+      success: false,
+      errors: [{ message: "Not enough stock" }],
+    });
   }
   await prisma.cartItem.update({
     where: { id: cartItemId },

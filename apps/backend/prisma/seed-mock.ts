@@ -38,72 +38,77 @@ async function ensureCategoryTree() {
 
   const catElectronics = await prisma.category.create({
     data: {
-      name: "Electronics",
+      name: "Електроніка",
       slug: "electronics",
-      description: "Electronic devices",
+      description: "Електронні пристрої",
       position: 0,
     },
   });
   const catClothing = await prisma.category.create({
     data: {
-      name: "Clothing",
+      name: "Одяг",
       slug: "clothing",
-      description: "Apparel",
+      description: "Одяг та взуття",
       position: 1,
     },
   });
   const catHome = await prisma.category.create({
     data: {
-      name: "Home",
+      name: "Дім",
       slug: "home",
-      description: "Home goods",
+      description: "Товари для дому",
       position: 2,
     },
   });
   const catSports = await prisma.category.create({
     data: {
-      name: "Sports",
+      name: "Спорт",
       slug: "sports",
-      description: "Sports equipment",
+      description: "Спортивне обладнання",
       position: 3,
     },
   });
 
   const children = [
     {
-      name: "Laptops",
+      name: "Ноутбуки",
       slug: "laptops",
       parentId: catElectronics.id,
       position: 0,
     },
     {
-      name: "Smartphones",
+      name: "Смартфони",
       slug: "smartphones",
       parentId: catElectronics.id,
       position: 1,
     },
     {
-      name: "Tablets",
+      name: "Планшети",
       slug: "tablets",
       parentId: catElectronics.id,
       position: 2,
     },
     {
-      name: "Headphones",
+      name: "Навушники",
       slug: "headphones",
       parentId: catElectronics.id,
       position: 3,
     },
-    { name: "Men", slug: "men", parentId: catClothing.id, position: 0 },
-    { name: "Women", slug: "women", parentId: catClothing.id, position: 1 },
-    { name: "Kids", slug: "kids", parentId: catClothing.id, position: 2 },
-    { name: "Furniture", slug: "furniture", parentId: catHome.id, position: 0 },
-    { name: "Kitchen", slug: "kitchen", parentId: catHome.id, position: 1 },
-    { name: "Decor", slug: "decor", parentId: catHome.id, position: 2 },
-    { name: "Fitness", slug: "fitness", parentId: catSports.id, position: 0 },
-    { name: "Outdoor", slug: "outdoor", parentId: catSports.id, position: 1 },
+    { name: "Чоловікам", slug: "men", parentId: catClothing.id, position: 0 },
+    { name: "Жінкам", slug: "women", parentId: catClothing.id, position: 1 },
+    { name: "Дітям", slug: "kids", parentId: catClothing.id, position: 2 },
+    { name: "Меблі", slug: "furniture", parentId: catHome.id, position: 0 },
+    { name: "Кухня", slug: "kitchen", parentId: catHome.id, position: 1 },
+    { name: "Декор", slug: "decor", parentId: catHome.id, position: 2 },
+    { name: "Фітнес", slug: "fitness", parentId: catSports.id, position: 0 },
     {
-      name: "Team Sports",
+      name: "На природі",
+      slug: "outdoor",
+      parentId: catSports.id,
+      position: 1,
+    },
+    {
+      name: "Командні види спорту",
       slug: "team-sports",
       parentId: catSports.id,
       position: 2,

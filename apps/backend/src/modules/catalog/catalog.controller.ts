@@ -21,6 +21,24 @@ const reviewsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });
 
+const priceRangeQuerySchema = z.object({
+  search: z.string().trim().min(1).optional(),
+  categoryId: z.string().uuid().optional(),
+  rating: z.coerce.number().optional(),
+});
+
+export async function getProductsPriceRange(req: Request, res: Response) {
+  const parsed = priceRangeQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return res.status(400).json({
+      success: false,
+      errors: [{ message: "Invalid query" }],
+    });
+  }
+  const data = await catalogService.getCatalogPriceRange(parsed.data);
+  return res.json({ success: true, data });
+}
+
 export async function getProducts(req: Request, res: Response) {
   const parsed = productsQuerySchema.safeParse(req.query);
   if (!parsed.success) {

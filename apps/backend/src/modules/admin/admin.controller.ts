@@ -290,7 +290,7 @@ export async function deleteAdminProductById(req: Request, res: Response) {
     });
   }
   await adminService.deleteAdminProduct(productId.data);
-  return res.json({ success: true });
+  return res.json({ success: true, data: {} });
 }
 
 export async function getAdminOrders(req: Request, res: Response) {
@@ -337,7 +337,7 @@ export async function patchAdminOrderStatusById(req: Request, res: Response) {
       orderId.data,
       parsedBody.data.status
     );
-    return res.json({ success: true });
+    return res.json({ success: true, data: {} });
   } catch (e) {
     if (e instanceof HttpError && e.statusCode === 404) {
       return res

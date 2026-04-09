@@ -136,7 +136,7 @@ async function main() {
       data: {
         userId: sellerUsers[0].id,
         shopName: "TechVault",
-        description: "Electronics and gadgets",
+        description: "Електроніка та гаджети",
         status: SellerStatus.ACTIVE,
       },
     }),
@@ -144,7 +144,7 @@ async function main() {
       data: {
         userId: sellerUsers[1].id,
         shopName: "StyleHub",
-        description: "Fashion and apparel",
+        description: "Мода та одяг",
         status: SellerStatus.ACTIVE,
       },
     }),
@@ -152,7 +152,7 @@ async function main() {
       data: {
         userId: sellerUsers[2].id,
         shopName: "HomeNest",
-        description: "Home and living",
+        description: "Дім і затишок",
         status: SellerStatus.ACTIVE,
       },
     }),
@@ -160,40 +160,40 @@ async function main() {
 
   const catElectronics = await prisma.category.create({
     data: {
-      name: "Electronics",
+      name: "Електроніка",
       slug: "electronics",
-      description: "Electronic devices",
+      description: "Електронні пристрої",
       position: 0,
     },
   });
   const catClothing = await prisma.category.create({
     data: {
-      name: "Clothing",
+      name: "Одяг",
       slug: "clothing",
-      description: "Apparel",
+      description: "Одяг та взуття",
       position: 1,
     },
   });
   const catHome = await prisma.category.create({
     data: {
-      name: "Home",
+      name: "Дім",
       slug: "home",
-      description: "Home goods",
+      description: "Товари для дому",
       position: 2,
     },
   });
   const catSports = await prisma.category.create({
     data: {
-      name: "Sports",
+      name: "Спорт",
       slug: "sports",
-      description: "Sports equipment",
+      description: "Спортивне обладнання",
       position: 3,
     },
   });
 
   const catLaptops = await prisma.category.create({
     data: {
-      name: "Laptops",
+      name: "Ноутбуки",
       slug: "laptops",
       parentId: catElectronics.id,
       position: 0,
@@ -201,7 +201,7 @@ async function main() {
   });
   const catSmartphones = await prisma.category.create({
     data: {
-      name: "Smartphones",
+      name: "Смартфони",
       slug: "smartphones",
       parentId: catElectronics.id,
       position: 1,
@@ -209,7 +209,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Tablets",
+      name: "Планшети",
       slug: "tablets",
       parentId: catElectronics.id,
       position: 2,
@@ -217,7 +217,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Headphones",
+      name: "Навушники",
       slug: "headphones",
       parentId: catElectronics.id,
       position: 3,
@@ -225,7 +225,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Men",
+      name: "Чоловікам",
       slug: "men",
       parentId: catClothing.id,
       position: 0,
@@ -233,7 +233,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Women",
+      name: "Жінкам",
       slug: "women",
       parentId: catClothing.id,
       position: 1,
@@ -241,7 +241,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Kids",
+      name: "Дітям",
       slug: "kids",
       parentId: catClothing.id,
       position: 2,
@@ -249,7 +249,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Furniture",
+      name: "Меблі",
       slug: "furniture",
       parentId: catHome.id,
       position: 0,
@@ -257,7 +257,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Kitchen",
+      name: "Кухня",
       slug: "kitchen",
       parentId: catHome.id,
       position: 1,
@@ -265,7 +265,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Decor",
+      name: "Декор",
       slug: "decor",
       parentId: catHome.id,
       position: 2,
@@ -273,7 +273,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Fitness",
+      name: "Фітнес",
       slug: "fitness",
       parentId: catSports.id,
       position: 0,
@@ -281,7 +281,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Outdoor",
+      name: "На природі",
       slug: "outdoor",
       parentId: catSports.id,
       position: 1,
@@ -289,7 +289,7 @@ async function main() {
   });
   await prisma.category.create({
     data: {
-      name: "Team Sports",
+      name: "Командні види спорту",
       slug: "team-sports",
       parentId: catSports.id,
       position: 2,

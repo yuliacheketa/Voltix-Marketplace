@@ -1,7 +1,13 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import { Role } from "@prisma/client";
 
-export function requireRole(...allowed: Role[]) {
+export function requireRole(
+  first: Role | Role[],
+  ...rest: Role[]
+): RequestHandler {
+  const allowed = (
+    Array.isArray(first) ? [...first, ...rest] : [first, ...rest]
+  ) as Role[];
   return (req: Request, res: Response, next: NextFunction) => {
     const role = req.user?.role;
     if (!role || !allowed.includes(role)) {

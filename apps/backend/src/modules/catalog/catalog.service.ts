@@ -20,9 +20,16 @@ export type CatalogProductsQuery = {
   sortBy: "price_asc" | "price_desc" | "rating" | "newest";
 };
 
-export async function listCatalogProducts(q: CatalogProductsQuery) {
-  const skip = (q.page - 1) * q.limit;
-  const where: Prisma.ProductWhereInput = {
+export type CatalogPriceRangeQuery = {
+  search?: string;
+  categoryId?: string;
+  rating?: number;
+};
+
+function catalogListWhereWithoutPrice(
+  q: CatalogPriceRangeQuery
+): Prisma.ProductWhereInput {
+  return {
     status: ProductStatus.ACTIVE,
     seller: { status: SellerStatus.ACTIVE },
     ...(q.search
@@ -31,6 +38,30 @@ export async function listCatalogProducts(q: CatalogProductsQuery) {
         }
       : {}),
     ...(q.categoryId ? { categoryId: q.categoryId } : {}),
+    ...(q.rating != null ? { rating: { gte: q.rating } } : {}),
+  };
+}
+
+export async function getCatalogPriceRange(q: CatalogPriceRangeQuery) {
+  const where = catalogListWhereWithoutPrice(q);
+  const agg = await prisma.product.aggregate({
+    where,
+    _min: { basePrice: true },
+    _max: { basePrice: true },
+    _count: true,
+  });
+  if (agg._count === 0) {
+    return { minPrice: 0, maxPrice: 0 };
+  }
+  const minN = Number(agg._min.basePrice ?? 0);
+  const maxN = Number(agg._max.basePrice ?? 0);
+  return { minPrice: minN, maxPrice: maxN };
+}
+
+export async function listCatalogProducts(q: CatalogProductsQuery) {
+  const skip = (q.page - 1) * q.limit;
+  const where: Prisma.ProductWhereInput = {
+    ...catalogListWhereWithoutPrice(q),
     ...(q.minPrice != null || q.maxPrice != null
       ? {
           basePrice: {

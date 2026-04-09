@@ -66,6 +66,7 @@ export async function getOrderById(req: Request, res: Response) {
               amount: order.payment.amount.toString(),
               paidAt: order.payment.paidAt,
               failureReason: order.payment.failureReason,
+              transactionId: order.payment.transactionId,
             }
           : null,
         sellerOrders: order.sellerOrders.map((so) => ({

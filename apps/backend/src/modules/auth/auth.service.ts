@@ -150,7 +150,10 @@ export async function loginUser(input: LoginInput) {
     throw new HttpError(401, "Invalid credentials");
   }
   if (!user.isActive) {
-    throw new HttpError(403, "Account is deactivated");
+    throw new HttpError(403, "Account is deactivated", {
+      success: false,
+      errors: [{ message: "Account is deactivated" }],
+    });
   }
   const token = signAccessToken({
     id: user.id,

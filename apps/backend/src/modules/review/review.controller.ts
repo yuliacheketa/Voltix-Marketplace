@@ -14,5 +14,5 @@ export async function postReview(
   }
   const body = req.body as CreateReviewBody;
   const data = await createReview(userId, body);
-  return res.status(201).json(data);
+  return res.status(201).json({ success: true, data });
 }
