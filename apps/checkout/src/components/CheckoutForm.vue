@@ -5,31 +5,18 @@
     <form class="form" @submit.prevent="onSubmit">
       <label class="lbl">
         Повне імʼя
-        <input
-          v-model="fullName"
-          v-bind="fullNameAttrs"
-          type="text"
-          class="inp"
-          autocomplete="name"
-        />
+        <input v-model="fullName" type="text" class="inp" autocomplete="name" />
         <span v-if="errors.fullName" class="err">{{ errors.fullName }}</span>
       </label>
       <label class="lbl">
         Електронна пошта
-        <input
-          v-model="email"
-          v-bind="emailAttrs"
-          type="email"
-          class="inp"
-          autocomplete="email"
-        />
+        <input v-model="email" type="email" class="inp" autocomplete="email" />
         <span v-if="errors.email" class="err">{{ errors.email }}</span>
       </label>
       <label class="lbl">
         Телефон
         <IMaskComponent
           v-model="phone"
-          v-bind="phoneAttrs"
           :mask="'(000) 000-0000'"
           class="inp"
           inputmode="tel"
@@ -41,7 +28,6 @@
         Вулиця, будинок
         <input
           v-model="street"
-          v-bind="streetAttrs"
           type="text"
           class="inp"
           autocomplete="street-address"
@@ -51,12 +37,12 @@
       <div class="row2">
         <label class="lbl">
           Місто
-          <input v-model="city" v-bind="cityAttrs" type="text" class="inp" />
+          <input v-model="city" type="text" class="inp" />
           <span v-if="errors.city" class="err">{{ errors.city }}</span>
         </label>
         <label class="lbl">
           Індекс
-          <input v-model="zip" v-bind="zipAttrs" type="text" class="inp" />
+          <input v-model="zip" type="text" class="inp" />
           <span v-if="errors.zip" class="err">{{ errors.zip }}</span>
         </label>
       </div>
@@ -64,7 +50,6 @@
         Країна
         <input
           v-model="country"
-          v-bind="countryAttrs"
           type="text"
           class="inp"
           autocomplete="country-name"
@@ -79,51 +64,75 @@
   </div>
 </template>
 
-<script setup>
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/yup";
+<script>
 import * as yup from "yup";
-import { useRouter } from "vue-router";
 import { IMaskComponent } from "vue-imask";
 import { isValidEmail, isValidPhone } from "@voltix/utils";
 import { checkoutFlow } from "../checkoutFlow.js";
 
-const router = useRouter();
-
-const schema = toTypedSchema(
-  yup.object({
-    fullName: yup.string().required("Обовʼязково"),
-    email: yup
-      .string()
-      .required("Обовʼязково")
-      .test("em", "Некоректний email", (v) => isValidEmail(v || "")),
-    phone: yup
-      .string()
-      .required("Обовʼязково")
-      .test("ph", "Некоректний телефон", (v) => isValidPhone(v || "")),
-    street: yup.string().required("Обовʼязково"),
-    city: yup.string().required("Обовʼязково"),
-    zip: yup.string().required("Обовʼязково"),
-    country: yup.string().required("Обовʼязково"),
-  })
-);
-
-const { handleSubmit, errors, defineField } = useForm({
-  validationSchema: schema,
+const schema = yup.object({
+  fullName: yup.string().required("Обовʼязково"),
+  email: yup
+    .string()
+    .required("Обовʼязково")
+    .test("em", "Некоректний email", (v) => isValidEmail(v || "")),
+  phone: yup
+    .string()
+    .required("Обовʼязково")
+    .test("ph", "Некоректний телефон", (v) => isValidPhone(v || "")),
+  street: yup.string().required("Обовʼязково"),
+  city: yup.string().required("Обовʼязково"),
+  zip: yup.string().required("Обовʼязково"),
+  country: yup.string().required("Обовʼязково"),
 });
 
-const [fullName, fullNameAttrs] = defineField("fullName");
-const [email, emailAttrs] = defineField("email");
-const [phone, phoneAttrs] = defineField("phone");
-const [street, streetAttrs] = defineField("street");
-const [city, cityAttrs] = defineField("city");
-const [zip, zipAttrs] = defineField("zip");
-const [country, countryAttrs] = defineField("country");
+export default {
+  name: "CheckoutForm",
+  components: {
+    IMaskComponent,
+  },
+  data() {
+    return {
+      fullName: "",
+      email: "",
+      phone: "",
+      street: "",
+      city: "",
+      zip: "",
+      country: "",
+      errors: {},
+    };
+  },
+  methods: {
+    async onSubmit() {
+      this.errors = {};
+      const vals = {
+        fullName: this.fullName,
+        email: this.email,
+        phone: this.phone,
+        street: this.street,
+        city: this.city,
+        zip: this.zip,
+        country: this.country,
+      };
 
-const onSubmit = handleSubmit((vals) => {
-  checkoutFlow.contact = { ...vals };
-  router.push({ name: "checkout-delivery" });
-});
+      try {
+        await schema.validate(vals, { abortEarly: false });
+      } catch (e) {
+        const next = {};
+        const list = (e && e.inner) || [];
+        for (const it of list) {
+          if (it && it.path && !next[it.path]) next[it.path] = it.message;
+        }
+        this.errors = next;
+        return;
+      }
+
+      checkoutFlow.contact = { ...vals };
+      this.$router.push({ name: "checkout-delivery" });
+    },
+  },
+};
 </script>
 
 <style scoped>

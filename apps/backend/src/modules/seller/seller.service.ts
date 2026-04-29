@@ -1,5 +1,10 @@
 import { randomBytes } from "crypto";
-import { Prisma, ProductStatus, SellerOrderStatus } from "@prisma/client";
+import {
+  NotificationType,
+  Prisma,
+  ProductStatus,
+  SellerOrderStatus,
+} from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import { HttpError } from "../../middleware/errorHandler";
 import type {
@@ -390,6 +395,7 @@ export async function patchSellerOrderStatus(
       : SellerOrderStatus.SHIPPED;
   const so = await prisma.sellerOrder.findFirst({
     where: { id: sellerOrderId, sellerId: sellerProfileId },
+    include: { order: { select: { id: true, userId: true } } },
   });
   if (!so) {
     return null;
@@ -401,6 +407,14 @@ export async function patchSellerOrderStatus(
   const updated = await prisma.sellerOrder.update({
     where: { id: sellerOrderId },
     data: { status: nextEnum },
+  });
+  await prisma.notification.create({
+    data: {
+      userId: so.order.userId,
+      type: NotificationType.ORDER_STATUS_CHANGED,
+      title: "Order update",
+      body: `Order ${so.order.id} status: ${nextEnum}`,
+    },
   });
   return updated;
 }

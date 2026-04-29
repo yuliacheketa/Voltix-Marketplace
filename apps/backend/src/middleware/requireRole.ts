@@ -1,24 +1,21 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import { Role } from "@prisma/client";
-import { prisma } from "../lib/prisma";
-import { HttpError } from "./errorHandler";
 
-export function requireRole(...roles: Role[]) {
-  return async (req: Request, _res: Response, next: NextFunction) => {
-    try {
-      if (!req.authUser) {
-        return next(new HttpError(401, "Потрібна авторизація"));
-      }
-      const user = await prisma.user.findUnique({
-        where: { id: req.authUser.id },
-        select: { role: true },
+export function requireRole(
+  first: Role | Role[],
+  ...rest: Role[]
+): RequestHandler {
+  const allowed = (
+    Array.isArray(first) ? [...first, ...rest] : [first, ...rest]
+  ) as Role[];
+  return (req: Request, res: Response, next: NextFunction) => {
+    const role = req.user?.role;
+    if (!role || !allowed.includes(role)) {
+      return res.status(403).json({
+        success: false,
+        errors: [{ message: "Forbidden" }],
       });
-      if (!user || !roles.includes(user.role)) {
-        return next(new HttpError(403, "Доступ заборонено"));
-      }
-      next();
-    } catch (e) {
-      next(e);
     }
+    next();
   };
 }

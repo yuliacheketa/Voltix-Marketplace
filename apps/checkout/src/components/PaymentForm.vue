@@ -46,46 +46,59 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+<script>
 import { IMaskComponent } from "vue-imask";
 import { isValidCard } from "@voltix/utils";
 import { checkoutFlow } from "../checkoutFlow.js";
 
-const router = useRouter();
-const cardNumber = ref("");
-const expiry = ref("");
-const cvv = ref("");
-const cardErr = ref("");
-const expiryErr = ref("");
-const cvvErr = ref("");
+export default {
+  name: "PaymentForm",
+  components: {
+    IMaskComponent,
+  },
+  data() {
+    return {
+      cardNumber: "",
+      expiry: "",
+      cvv: "",
+      cardErr: "",
+      expiryErr: "",
+      cvvErr: "",
+    };
+  },
+  methods: {
+    onSubmit() {
+      this.cardErr = "";
+      this.expiryErr = "";
+      this.cvvErr = "";
 
-function onSubmit() {
-  cardErr.value = "";
-  expiryErr.value = "";
-  cvvErr.value = "";
-  const digits = cardNumber.value.replace(/\D/g, "");
-  if (!isValidCard(digits)) {
-    cardErr.value = "Некоректний номер картки";
-    return;
-  }
-  const exp = expiry.value.replace(/\D/g, "");
-  if (exp.length !== 4) {
-    expiryErr.value = "Формат ММ/РР";
-    return;
-  }
-  const cv = cvv.value.replace(/\D/g, "");
-  if (cv.length < 3) {
-    cvvErr.value = "Некоректний CVV";
-    return;
-  }
-  checkoutFlow.payment = {
-    last4: digits.slice(-4),
-    expiry: expiry.value,
-  };
-  router.push({ name: "checkout-summary" });
-}
+      const digits = this.cardNumber.replace(/\D/g, "");
+      if (!isValidCard(digits)) {
+        this.cardErr = "Некоректний номер картки";
+        return;
+      }
+
+      const exp = this.expiry.replace(/\D/g, "");
+      if (exp.length !== 4) {
+        this.expiryErr = "Формат ММ/РР";
+        return;
+      }
+
+      const cv = this.cvv.replace(/\D/g, "");
+      if (cv.length < 3) {
+        this.cvvErr = "Некоректний CVV";
+        return;
+      }
+
+      checkoutFlow.payment = {
+        last4: digits.slice(-4),
+        expiry: this.expiry,
+      };
+
+      this.$router.push({ name: "checkout-summary" });
+    },
+  },
+};
 </script>
 
 <style scoped>

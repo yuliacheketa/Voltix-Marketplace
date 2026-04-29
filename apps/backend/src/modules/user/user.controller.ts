@@ -15,10 +15,35 @@ export async function getMe(req: Request, res: Response) {
   });
 }
 
+export async function getMyAddresses(req: Request, res: Response) {
+  const userId = req.user!.userId;
+  const addresses = await userService.listAddressesForUser(userId);
+  return res.status(200).json({
+    success: true,
+    data: { addresses },
+  });
+}
+
 export async function patchMe(req: Request, res: Response) {
   const userId = req.user!.userId;
   const body = req.body as UpdateProfileBody;
   const user = await userService.updateProfile(userId, body);
+  return res.status(200).json({
+    success: true,
+    data: { user },
+  });
+}
+
+export async function postMyAvatar(req: Request, res: Response) {
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json({
+      success: false,
+      errors: [{ message: "Файл не надіслано" }],
+    });
+  }
+  const userId = req.user!.userId;
+  const user = await userService.replaceAvatarWithUpload(userId, file.filename);
   return res.status(200).json({
     success: true,
     data: { user },
@@ -30,6 +55,7 @@ export async function patchPassword(req: Request, res: Response) {
   const result = await userService.changePassword(userId, req.body);
   if (!result.ok) {
     return res.status(400).json({
+      success: false,
       errors: [
         {
           field: "currentPassword",
@@ -40,6 +66,7 @@ export async function patchPassword(req: Request, res: Response) {
   }
   return res.status(200).json({
     success: true,
+    data: {},
     message: "Password updated successfully",
   });
 }
@@ -49,8 +76,11 @@ export async function getMyOrders(req: Request, res: Response) {
   const parsed = ordersQuerySchema.safeParse(req.query);
   if (!parsed.success) {
     return res.status(400).json({
-      message: "Помилка валідації",
-      errors: parsed.error.flatten(),
+      success: false,
+      errors: parsed.error.issues.map((i) => ({
+        field: i.path.length ? i.path.join(".") : "query",
+        message: i.message,
+      })),
     });
   }
   const { page, limit } = parsed.data;
@@ -70,6 +100,7 @@ export async function postAddress(req: Request, res: Response) {
   const out = await userService.createAddress(userId, req.body);
   if (!out.ok) {
     return res.status(400).json({
+      success: false,
       errors: [{ message: "Maximum 10 addresses allowed" }],
     });
   }
@@ -84,6 +115,7 @@ export async function patchAddress(req: Request, res: Response) {
   const idParse = addressIdParam.safeParse(req.params.addressId);
   if (!idParse.success) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Address not found" }],
     });
   }
@@ -94,6 +126,7 @@ export async function patchAddress(req: Request, res: Response) {
   );
   if (!address) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Address not found" }],
     });
   }
@@ -108,17 +141,20 @@ export async function deleteAddress(req: Request, res: Response) {
   const idParse = addressIdParam.safeParse(req.params.addressId);
   if (!idParse.success) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Address not found" }],
     });
   }
   const result = await userService.deleteAddress(userId, idParse.data);
   if (!result) {
     return res.status(404).json({
+      success: false,
       errors: [{ message: "Address not found" }],
     });
   }
   return res.status(200).json({
     success: true,
+    data: {},
     message: "Address deleted",
   });
 }

@@ -1,4 +1,5 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import Vue from "vue";
+import VueRouter from "vue-router";
 import CartDrawer from "./components/CartDrawer.vue";
 import CheckoutForm from "./components/CheckoutForm.vue";
 import DeliveryOptions from "./components/DeliveryOptions.vue";
@@ -6,14 +7,13 @@ import PaymentForm from "./components/PaymentForm.vue";
 import OrderSummary from "./components/OrderSummary.vue";
 import OrderSuccess from "./components/OrderSuccess.vue";
 
+Vue.use(VueRouter);
+
 export function createCheckoutRouter() {
-  return createRouter({
-    history: createWebHashHistory(),
+  return new VueRouter({
+    mode: "hash",
     routes: [
-      {
-        path: "/",
-        redirect: () => ({ path: "/cart", replace: true }),
-      },
+      { path: "/", redirect: "/cart" },
       { path: "/cart", name: "cart", component: CartDrawer },
       { path: "/checkout", redirect: "/checkout/contact" },
       {
@@ -40,7 +40,7 @@ export function createCheckoutRouter() {
         path: "/order-success",
         name: "order-success",
         component: OrderSuccess,
-        props: (route) => ({ orderId: route.query.id ?? "" }),
+        props: (route) => ({ orderId: (route.query && route.query.id) || "" }),
       },
     ],
   });

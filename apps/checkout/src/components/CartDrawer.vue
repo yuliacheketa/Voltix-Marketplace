@@ -24,38 +24,46 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
+<script>
 import { cartStore, cartTotalPrice } from "@voltix/shared-state";
 import { formatPrice } from "@voltix/utils";
 import CartItem from "./CartItem.vue";
 
-const router = useRouter();
-const items = ref([]);
-const subtotal = ref(0);
+export default {
+  name: "CartDrawer",
+  components: {
+    CartItem,
+  },
+  data() {
+    return {
+      items: [],
+      subtotal: 0,
+      unsub: null,
+    };
+  },
+  computed: {
+    subtotalFormatted() {
+      return formatPrice(this.subtotal, "USD");
+    },
+  },
+  mounted() {
+    const sync = () => {
+      this.items = [...cartStore.getState().items];
+      this.subtotal = cartTotalPrice();
+    };
 
-const subtotalFormatted = computed(() => formatPrice(subtotal.value, "USD"));
-
-let unsub = () => {};
-
-function sync() {
-  items.value = [...cartStore.getState().items];
-  subtotal.value = cartTotalPrice();
-}
-
-onMounted(() => {
-  sync();
-  unsub = cartStore.subscribe(sync);
-});
-
-onUnmounted(() => {
-  unsub();
-});
-
-function close() {
-  router.back();
-}
+    sync();
+    this.unsub = cartStore.subscribe(sync);
+  },
+  beforeDestroy() {
+    if (typeof this.unsub === "function") this.unsub();
+  },
+  methods: {
+    close() {
+      this.$router.back();
+    },
+  },
+};
 </script>
 
 <style scoped>

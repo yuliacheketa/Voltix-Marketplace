@@ -12,17 +12,19 @@
   </div>
 </template>
 
-<script setup>
-import { onMounted } from "vue";
+import { cartStore } from "@voltix/shared-state";
+<script>
 import { cartStore } from "@voltix/shared-state";
 
-const props = defineProps({
-  orderId: { type: String, default: "" },
-});
-
-onMounted(() => {
-  cartStore.getState().clearCart();
-});
+export default {
+  name: "OrderSuccess",
+  props: {
+    orderId: { type: String, default: "" },
+  },
+  mounted() {
+    cartStore.getState().clearCart();
+  },
+};
 </script>
 
 <style scoped>

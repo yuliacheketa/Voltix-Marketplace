@@ -1,11 +1,20 @@
 import "dotenv/config";
 import express from "express";
+import path from "path";
+import { adminRouter } from "./modules/admin/admin.router";
 import { authRouter } from "./modules/auth/auth.router";
+import { cartRouter } from "./modules/cart/cart.router";
+import { catalogRouter } from "./modules/catalog/catalog.router";
+import { notificationRouter } from "./modules/notification/notification.router";
 import { orderRouter } from "./modules/order/order.router";
+import { paymentRouter } from "./modules/payment/payment.router";
 import { reviewRouter } from "./modules/review/review.router";
 import { sellerRouter } from "./modules/seller/seller.router";
 import { userRouter } from "./modules/user/user.router";
+import { ensureAvatarsDir } from "./modules/user/user.avatarStorage";
 import { errorHandler } from "./middleware/errorHandler";
+
+ensureAvatarsDir();
 
 const app = express();
 
@@ -24,46 +33,38 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.use(
+  "/api/uploads",
+  express.static(path.join(process.cwd(), "uploads"), {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    immutable: true,
+  })
+);
+
 app.get("/", (_req, res) => {
   res.json({
-    name: "voltix-api",
-    health: "GET /health",
-    auth: {
-      register: "POST /api/auth/register",
-      login: "POST /api/auth/login",
-      verifyEmail: "GET /api/auth/verify-email?token=<token>",
-      me: "GET /api/auth/me (Authorization: Bearer <token>)",
-    },
-    orders: {
-      create: "POST /api/orders (Bearer)",
-      sellerList: "GET /api/orders/seller (Bearer, SELLER)",
-    },
-    reviews: {
-      create: "POST /api/reviews (Bearer)",
-    },
-    users: {
-      me: "GET /api/users/me (Bearer)",
-      updateMe: "PATCH /api/users/me (Bearer)",
-      password: "PATCH /api/users/me/password (Bearer)",
-      orders: "GET /api/users/me/orders (Bearer)",
-      addresses: "POST /api/users/me/addresses (Bearer)",
-      addressById: "PATCH|DELETE /api/users/me/addresses/:addressId (Bearer)",
-    },
-    seller: {
-      base: "/api/seller (Bearer, SELLER)",
+    success: true,
+    data: {
+      name: "voltix-api",
+      health: "GET /health",
     },
   });
 });
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true });
+  res.json({ success: true, data: { ok: true } });
 });
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/seller", sellerRouter);
+app.use("/api/catalog", catalogRouter);
+app.use("/api/cart", cartRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/payments", paymentRouter);
+app.use("/api/seller", sellerRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/notifications", notificationRouter);
+app.use("/api/admin", adminRouter);
 
 app.use(errorHandler);
 

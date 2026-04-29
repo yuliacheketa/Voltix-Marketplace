@@ -11,7 +11,8 @@ export default {
   },
   unmount() {
     if (mountedApp) {
-      mountedApp.unmount();
+      mountedApp.$destroy();
+      if (mountedApp.$el) mountedApp.$el.innerHTML = "";
       mountedApp = null;
     }
   },

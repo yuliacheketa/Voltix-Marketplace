@@ -1,18 +1,12 @@
+import { PaymentMethod } from "@prisma/client";
 import { z } from "zod";
 
-export const createOrderSchema = z.object({
+export const placeOrderFromCartSchema = z.object({
   addressId: z.string().uuid(),
-  deliveryMethod: z.string().min(1).max(120),
-  deliveryCost: z.union([z.string().min(1), z.number()]),
-  lines: z
-    .array(
-      z.object({
-        variantId: z.string().uuid(),
-        quantity: z.number().int().positive(),
-      })
-    )
-    .min(1),
+  deliveryMethod: z.enum(["STANDARD", "EXPRESS", "PICKUP"]),
+  deliveryCost: z.coerce.number().min(0),
   note: z.string().max(2000).optional(),
+  paymentMethod: z.nativeEnum(PaymentMethod),
 });
 
-export type CreateOrderBody = z.infer<typeof createOrderSchema>;
+export type PlaceOrderFromCartBody = z.infer<typeof placeOrderFromCartSchema>;

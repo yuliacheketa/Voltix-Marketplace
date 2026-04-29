@@ -12,6 +12,7 @@ import {
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { createOrderWithSellerOrders } from "../src/modules/order/order.service";
+import { getSeedProductTripleUrls } from "./productDemoImages";
 
 const prisma = new PrismaClient();
 
@@ -135,7 +136,7 @@ async function main() {
       data: {
         userId: sellerUsers[0].id,
         shopName: "TechVault",
-        description: "Electronics and gadgets",
+        description: "Електроніка та гаджети",
         status: SellerStatus.ACTIVE,
       },
     }),
@@ -143,7 +144,7 @@ async function main() {
       data: {
         userId: sellerUsers[1].id,
         shopName: "StyleHub",
-        description: "Fashion and apparel",
+        description: "Мода та одяг",
         status: SellerStatus.ACTIVE,
       },
     }),
@@ -151,7 +152,7 @@ async function main() {
       data: {
         userId: sellerUsers[2].id,
         shopName: "HomeNest",
-        description: "Home and living",
+        description: "Дім і затишок",
         status: SellerStatus.ACTIVE,
       },
     }),
@@ -159,40 +160,40 @@ async function main() {
 
   const catElectronics = await prisma.category.create({
     data: {
-      name: "Electronics",
+      name: "Електроніка",
       slug: "electronics",
-      description: "Electronic devices",
+      description: "Електронні пристрої",
       position: 0,
     },
   });
   const catClothing = await prisma.category.create({
     data: {
-      name: "Clothing",
+      name: "Одяг",
       slug: "clothing",
-      description: "Apparel",
+      description: "Одяг та взуття",
       position: 1,
     },
   });
   const catHome = await prisma.category.create({
     data: {
-      name: "Home",
+      name: "Дім",
       slug: "home",
-      description: "Home goods",
+      description: "Товари для дому",
       position: 2,
     },
   });
   const catSports = await prisma.category.create({
     data: {
-      name: "Sports",
+      name: "Спорт",
       slug: "sports",
-      description: "Sports equipment",
+      description: "Спортивне обладнання",
       position: 3,
     },
   });
 
   const catLaptops = await prisma.category.create({
     data: {
-      name: "Laptops",
+      name: "Ноутбуки",
       slug: "laptops",
       parentId: catElectronics.id,
       position: 0,
@@ -200,10 +201,98 @@ async function main() {
   });
   const catSmartphones = await prisma.category.create({
     data: {
-      name: "Smartphones",
+      name: "Смартфони",
       slug: "smartphones",
       parentId: catElectronics.id,
       position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Планшети",
+      slug: "tablets",
+      parentId: catElectronics.id,
+      position: 2,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Навушники",
+      slug: "headphones",
+      parentId: catElectronics.id,
+      position: 3,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Чоловікам",
+      slug: "men",
+      parentId: catClothing.id,
+      position: 0,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Жінкам",
+      slug: "women",
+      parentId: catClothing.id,
+      position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Дітям",
+      slug: "kids",
+      parentId: catClothing.id,
+      position: 2,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Меблі",
+      slug: "furniture",
+      parentId: catHome.id,
+      position: 0,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Кухня",
+      slug: "kitchen",
+      parentId: catHome.id,
+      position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Декор",
+      slug: "decor",
+      parentId: catHome.id,
+      position: 2,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Фітнес",
+      slug: "fitness",
+      parentId: catSports.id,
+      position: 0,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "На природі",
+      slug: "outdoor",
+      parentId: catSports.id,
+      position: 1,
+    },
+  });
+  await prisma.category.create({
+    data: {
+      name: "Командні види спорту",
+      slug: "team-sports",
+      parentId: catSports.id,
+      position: 2,
     },
   });
 
@@ -307,25 +396,26 @@ async function main() {
       },
     });
 
+    const [u0, u1, u2] = getSeedProductTripleUrls(def.slug);
     await prisma.productImage.createMany({
       data: [
         {
           productId: p.id,
-          url: `https://picsum.photos/seed/${def.slug}-1/800/600`,
+          url: u0,
           altText: `${def.name} main`,
           isMain: true,
           position: 0,
         },
         {
           productId: p.id,
-          url: `https://picsum.photos/seed/${def.slug}-2/800/600`,
+          url: u1,
           altText: `${def.name} angle`,
           isMain: false,
           position: 1,
         },
         {
           productId: p.id,
-          url: `https://picsum.photos/seed/${def.slug}-3/800/600`,
+          url: u2,
           altText: `${def.name} detail`,
           isMain: false,
           position: 2,

@@ -41,3 +41,9 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export const verifyEmailQuerySchema = z.object({
   token: z.string().min(1),
 });
+
+export const refreshTokenSchema = z.object({
+  token: z.string().min(1),
+});
+
+export type RefreshTokenBody = z.infer<typeof refreshTokenSchema>;

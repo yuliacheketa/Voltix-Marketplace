@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 const { ModuleFederationPlugin } = require("webpack").container;
-const { VueLoaderPlugin } = require("vue-loader");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const path = require("path");
 
 module.exports = {
@@ -9,6 +9,7 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 3002,
+    host: "127.0.0.1",
     historyApiFallback: true,
     allowedHosts: "all",
     headers: {
@@ -29,10 +30,8 @@ module.exports = {
       path.resolve(__dirname, "../../node_modules"),
     ],
     alias: {
-      vue: path.resolve(
-        __dirname,
-        "../../node_modules/vue/dist/vue.esm-bundler.js"
-      ),
+      vue$: path.resolve(__dirname, "node_modules/vue/dist/vue.esm.js"),
+      vue: path.resolve(__dirname, "node_modules/vue/dist/vue.esm.js"),
     },
   },
   module: {
@@ -55,8 +54,6 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new webpack.DefinePlugin({
-      __VUE_OPTIONS_API__: true,
-      __VUE_PROD_DEVTOOLS__: false,
       "process.env.API_URL": JSON.stringify(process.env.API_URL ?? ""),
     }),
     new ModuleFederationPlugin({
@@ -69,7 +66,7 @@ module.exports = {
         vue: {
           singleton: true,
           strictVersion: false,
-          requiredVersion: "^3.5.13",
+          requiredVersion: "^2.7.16",
           eager: true,
         },
         "@voltix/shared-state": {

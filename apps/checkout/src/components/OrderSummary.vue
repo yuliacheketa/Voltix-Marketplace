@@ -29,70 +29,79 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+<script>
 import { cartStore } from "@voltix/shared-state";
 import { createOrder } from "@voltix/api-client";
 import { formatPrice } from "@voltix/utils";
 import { checkoutFlow } from "../checkoutFlow.js";
 
-const router = useRouter();
-const items = ref([]);
-const busy = ref(false);
-const err = ref("");
-
-onMounted(() => {
-  items.value = [...cartStore.getState().items];
-});
-
-const deliveryFee = computed(() => checkoutFlow.delivery?.fee ?? 0);
-
-const deliveryLabel = computed(() =>
-  deliveryFee.value === 0
-    ? "Безкоштовно"
-    : formatPrice(deliveryFee.value, "USD")
-);
-
-const subtotal = computed(() =>
-  items.value.reduce((s, i) => s + (i.unitPrice ?? 0) * i.quantity, 0)
-);
-
-const total = computed(() => subtotal.value + deliveryFee.value);
-
-const totalFormatted = computed(() => formatPrice(total.value, "USD"));
-
-function lineTotal(it) {
-  return formatPrice((it.unitPrice ?? 0) * it.quantity, "USD");
-}
-
-async function place() {
-  err.value = "";
-  if (!items.value.length) {
-    err.value = "Кошик порожній";
-    return;
-  }
-  busy.value = true;
-  try {
-    const order = await createOrder({
-      items: items.value.map((i) => ({
-        productId: i.productId,
-        quantity: i.quantity,
-        title: i.title,
-        unitPrice: i.unitPrice,
-      })),
-      currency: "USD",
-    });
-    router.push({
-      name: "order-success",
-      query: { id: order.id },
-    });
-  } catch (e) {
-    err.value = e?.message || "Не вдалося оформити замовлення";
-  } finally {
-    busy.value = false;
-  }
-}
+export default {
+  name: "OrderSummary",
+  data() {
+    return {
+      items: [],
+      busy: false,
+      err: "",
+    };
+  },
+  computed: {
+    deliveryFee() {
+      return (checkoutFlow.delivery && checkoutFlow.delivery.fee) || 0;
+    },
+    deliveryLabel() {
+      return this.deliveryFee === 0
+        ? "Безкоштовно"
+        : formatPrice(this.deliveryFee, "USD");
+    },
+    subtotal() {
+      return this.items.reduce(
+        (s, i) => s + (i.unitPrice || 0) * i.quantity,
+        0
+      );
+    },
+    total() {
+      return this.subtotal + this.deliveryFee;
+    },
+    totalFormatted() {
+      return formatPrice(this.total, "USD");
+    },
+  },
+  mounted() {
+    this.items = [...cartStore.getState().items];
+  },
+  methods: {
+    lineTotal(it) {
+      return formatPrice((it.unitPrice || 0) * it.quantity, "USD");
+    },
+    async place() {
+      this.err = "";
+      if (!this.items.length) {
+        this.err = "Кошик порожній";
+        return;
+      }
+      this.busy = true;
+      try {
+        const order = await createOrder({
+          items: this.items.map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            title: i.title,
+            unitPrice: i.unitPrice,
+          })),
+          currency: "USD",
+        });
+        this.$router.push({
+          name: "order-success",
+          query: { id: order.id },
+        });
+      } catch (e) {
+        this.err = (e && e.message) || "Не вдалося оформити замовлення";
+      } finally {
+        this.busy = false;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
